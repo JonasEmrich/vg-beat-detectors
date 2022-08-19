@@ -1,1 +1,1 @@
-# SIGNAL-PROCESSING-GROUPRobust-Visibility-Graph-Methods-for-Biomedical-Signal-Processing
+# Robust-Visibility-Graph-Methods-for-Biomedical-Signal-Processing
