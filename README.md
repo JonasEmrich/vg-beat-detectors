@@ -1,10 +1,10 @@
 # Robust-Visibility-Graph-Methods-for-Biomedical-Signal-Processing
 This repository provides the algorithm that I have imporoved as part of my bachelor thesis. The algorithm is based on [1], and an acceleration technique introduced in [2] was used and and further modified.
 
-[1] T. Koka and M. Muma, “Fast and Sample Accurate R-Peak Detection for Noisy ECG Using Visibility
+- [1] T. Koka and M. Muma, “Fast and Sample Accurate R-Peak Detection for Noisy ECG Using Visibility
 Graphs,” in 44th Annual International Conference of the IEEE Engineering in Medicine Biology Society
 (EMBC), July 2022.
-[2] S. Wirth, “Radar-based blood pressure estimation,” M.S. Thesis, 2022.
+- [2] S. Wirth, “Radar-based blood pressure estimation,” M.S. Thesis, 2022.
 
 ## Used Python & Packages
 - Python 3.10
