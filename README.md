@@ -12,7 +12,7 @@ Graphs,” in 44th Annual International Conference of the IEEE Engineering in Me
 - scipy 1.8.0
 - numpy 1.22.3
 
-## Abstract of my Thesis
+## Abstract
 The Electrocardiogram (ECG), which is a recording of the heart’s electrical activity, is one of the most commonly
 used biomedical signals. Whether for heartbeat analysis and diagnosis of heart diseases in clinical trials or
 for health and fitness monitoring with wearable devices, a fast and accurate R-peak detection, i.e., the
