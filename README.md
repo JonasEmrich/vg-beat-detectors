@@ -12,25 +12,9 @@ Graphs,” in 44th Annual International Conference of the IEEE Engineering in Me
 - scipy 1.8.0
 - numpy 1.22.3
 
-## Abstract
-The Electrocardiogram (ECG), which is a recording of the heart’s electrical activity, is one of the most commonly
-used biomedical signals. Whether for heartbeat analysis and diagnosis of heart diseases in clinical trials or
-for health and fitness monitoring with wearable devices, a fast and accurate R-peak detection, i.e., the
-determination of heartbeat positions, has become increasingly important. Recently, a new approach for fast
-and accurate R-peak detection has been developed that uses visibility graphs to map ECG-signals to a graph
-representation and then detect R-peaks in the graph domain. However, due to the complexity of medical
-phenomena, the occurrence of artifacts and outliers, and the need to process very large amounts of data
-with limited computing and storage capacities, the demand for further improvements is still great. In this
-Bachelors Project, it is shown that using an alternative visibility graph, i.e., the horizontal visibility graph
-(HVG), which can be computed more efficiently, results in significantly lower accuracy. Therefore, during this
-Bachelors Project, several techniques to improve the R-peak detection accuracy are proposed and evaluated on
-both the HVG and the natural visibility graph (NVG) transformations. In addition, an acceleration procedure
-that has been recently developed is introduced and further improved. It is shown, using the high precision
-ECG Database from the Glasgow University, the MIT-BIH Arrhythmia Database, the MIT-BIH Noise Stress
-Test Database and ECG data from the MyoVasc Study of the Johannes Gutenberg University Mainz that the
-resulting detector based on the weighted HVG outperforms the original detector in terms of runtime, while
-accuracy remains comparable or even increases. Furthermore, it is demonstrated that the proposed algorithm
-based on the HVG requires significantly less memory for computation than the original detector. Generally
-speaking, the runtime could be reduced by 91%, and the memory could be reduced by 58%, respectively. The
-results of this Bachelors Project are highly useful for a wide range of applications and, in future, can be further
-adapted to related biomedical signals.
+## Performance
+The plots below show the detection performance (F_1-score) of the proposed algorithms (visibility graph algorithms) against common detectors of the NeuroKit2 package on an ECG database of the University of Glasgow [3]. A tolerance window of +/-2 samples (8ms) is used for evaluation.
+- [3] Howell, L. and Porr, B. (2018) High precision ECG Database with annotated R peaks, recorded and filmed under realistic conditions. [Data Collection], Datacite DOI: 10.5525/gla.researchdata.716 
+
+![Evaluation on GUDB](plots/gudb_full_2sample.png?raw=true "Evaluation")
+![Evaluation on GUDB - Top Detectors](plots/gudb_upper_2sample.png?raw=true "Evaluation - Top Detectors")
