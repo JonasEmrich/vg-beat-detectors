@@ -13,7 +13,7 @@ Graphs,” in 44th Annual International Conference of the IEEE Engineering in Me
 - numpy 1.22.3
 
 ## Performance
-The plots below show the detection performance (F_1-score) of the proposed algorithms (visibility graph algorithms) against common detectors of the NeuroKit2 package on an ECG database of the University of Glasgow [3]. A tolerance window of +/-2 samples (8ms) is used for evaluation.
+The plots below show the detection performance ($F_1$-score) of the proposed algorithms (visibility graph algorithms) against common detectors of the NeuroKit2 package on an ECG database of the University of Glasgow [3]. A tolerance window of +/-2 samples (8ms) is used for evaluation.
 - [3] Howell, L. and Porr, B. (2018) High precision ECG Database with annotated R peaks, recorded and filmed under realistic conditions. [Data Collection], Datacite DOI: 10.5525/gla.researchdata.716 
 
 ![Evaluation on GUDB](plots/gudb_full_2sample.png?raw=true "Evaluation")
