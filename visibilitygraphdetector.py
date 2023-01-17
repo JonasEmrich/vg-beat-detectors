@@ -75,8 +75,8 @@ class VisGraphDetector:
             w = w_new
         return w
 
-    def visgraphdetect(self, sig, beta=0.85, gamma=0.5, lowcut=4.0, window_seconds=2, filtered=True, weight='abs_slope',
-                       use_hvg=True, accelerated=True, peak_correction=False):
+    def visgraphdetect(self, sig, beta=0.55, gamma=0.5, lowcut=4.0, window_seconds=2, filtered=True, weight=None,
+                       use_hvg=False, accelerated=True, peak_correction=True):
         """
         This function implements an R-peak detector using the directed natural visibility graph.
             Takes in an ECG-Signal and returns the R-peak indices.
@@ -128,25 +128,28 @@ class VisGraphDetector:
                 w = self.calc_weight(max_heights, beta, max_inds=max_inds, weight=weight, use_hvg=use_hvg)
 
                 ### Update full weight vector ###
-                if N - dM + 1 <= l and l + 1 <= N:
-                    weights[l + max_inds] = (weights[l + max_inds] + w)*0.5
-                else:
+                if l == 0:
                     weights[l + max_inds] = w
+                elif N - dM + 1 <= l and l + 1 <= N:
+                    weights[l + max_inds] = 0.5 * (weights[l + max_inds] + w)
+                else:
+                    weights[l + max_inds[max_inds<=dM]] = 0.5 * (w[max_inds<=dM] + weights[l + max_inds[max_inds<=dM]])
+                    weights[l + max_inds[max_inds>dM]] = w[max_inds>dM]
 
                 if r - l < M:
                     break
 
                 ### Update segment boundaries ###
-                l = l + (M - dM)
+                l += M - dM
                 if r + (M - dM) <= N:
-                    r = r + (M - dM)
+                    r += M - dM
                 else:
                     r = N
         else:
             # # # Compute the weights for every segment of the filtered signal # # #
             for jj in range(L):
                 s = sig[l:r]
-                w = self.calc_weight(s, beta, weighted=weighted, hvg=hvg)
+                w = self.calc_weight(s, beta, weight=weight, use_hvg=use_hvg)
 
                 # # # Update weight vector # # #
                 if l == 0:
@@ -194,8 +197,6 @@ class VisGraphDetector:
         min_distance = int(60 / max_heart_rate * self.fs)
         signal_peaks = [-min_distance]
         noise_peaks = []
-        index = 0
-        indexes = [0]
         peaks = [0]
         RR_missed = 0
 
@@ -209,45 +210,41 @@ class VisGraphDetector:
         for i in range(N):
             # skip first and last elements
             if 0 < i < N - 1:
-                # peak candidates should lie above noise threshold
-                if weight[i] < threshold_I2:
-                    continue
 
                 # detect peak candidates based on a rising + falling slope
                 if weight[i - 1] <= weight[i] >= weight[i + 1]:
-                    peak = i
-                    peaks.append(i)
-
                     # peak candidates should be greater than signal threshold
-                    if weight[peak] > threshold_I1:
+                    if weight[i] > threshold_I1:
                         # distance to last peak is greater than minimum detection distance
-                        if (peak - signal_peaks[-1]) > 0.3*self.fs:
-                            signal_peaks.append(peak)
-                            indexes.append(index)
+                        if (i - signal_peaks[-1]) > 0.3*self.fs:
+                            signal_peaks.append(i)
                             SPKI = 0.125 * weight[signal_peaks[-1]] + 0.875 * SPKI
                         # candidate is close to last detected peak -> check if current candidate is better choice
-                        elif 0.3*self.fs >= (peak - signal_peaks[-1]):
+                        elif 0.3*self.fs >= (i - signal_peaks[-1]):
                             # compare slope of last peak with current candidate
-                            if weight[peak] > weight[signal_peaks[-1]]: # test greater slope -> qrs
+                            if weight[i] > weight[signal_peaks[-1]]: # test greater slope -> qrs
                                 SPKI = (SPKI - 0.125 * weight[signal_peaks[-1]]) / 0.875  # reset threshold
-                                signal_peaks[-1] = peak
-                                indexes[-1] = index
+                                signal_peaks[-1] = i
                                 SPKI = 0.125 * weight[signal_peaks[-1]] + 0.875 * SPKI
                             else:
-                                noise_peaks.append(peak)
+                                noise_peaks.append(i)
                                 NPKI = 0.125 * weight[noise_peaks[-1]] + 0.875 * NPKI
                         else:
                             # not a peak -> label as noise and update noise level
-                            noise_peaks.append(peak)
-                            NPKI = 0.125 * weight[noise_peaks[-1]] + 0.875 * NPKI
+                            NPKI = 0.125 * weight[i] + 0.875 * NPKI
 
                         # # # back search for missed peaks
-                        if RR_missed != 0:
+                        if len(signal_peaks) > 8:
+                            RR = np.diff(signal_peaks[-9:])
+                            RR_ave = int(np.mean(RR))
+                            RR_missed = int(1.66 * RR_ave)
+                            
                             # if time difference of the last two signal peaks found is too large
                             if signal_peaks[-1] - signal_peaks[-2] > RR_missed:
+                                threshold_I2 = 0.5 * threshold_I1
                                 # get range of candidates and apply noise threshold
-                                missed_section_peaks = range(signal_peaks[-2]+int(min_distance), signal_peaks[-1]-int(min_distance))
-                                missed_section_peaks = [p for p in missed_section_peaks if weight[p] > threshold_I2*0.5]
+                                missed_section_peaks = range(signal_peaks[-2]+min_distance, signal_peaks[-1]-min_distance)
+                                missed_section_peaks = [p for p in missed_section_peaks if weight[p] > threshold_I2 ]
                                         
                                 # add largest sample in missed interval to peaks
                                 if len(missed_section_peaks) > 0:
@@ -257,27 +254,13 @@ class VisGraphDetector:
 
                     else:
                         # not a peak -> label as noise and update noise level
-                        noise_peaks.append(peak)
-                        NPKI = 0.125 * weight[noise_peaks[-1]] + 0.875 * NPKI
+                        NPKI = 0.125 * weight[i] + 0.875 * NPKI
 
                     threshold_I1 = NPKI + 0.25 * (SPKI - NPKI)
-                    threshold_I2 = 0.5 * threshold_I1
-                    
-                    # increase sensitivity
-                    threshold_I1 *= 0.5
-                    #threshold_I2 *= 0.5
-
-                    if len(signal_peaks) > 8:
-                        RR = np.diff(signal_peaks[-9:])
-                        RR_ave = int(np.mean(RR))
-                        RR_missed = int(1.66 * RR_ave)
-
-                    index += 1
 
         # remove first dummy elements
         if signal_peaks[0] == -min_distance:
             signal_peaks.pop(0)
-        indexes.pop(0)
         peaks.pop(0)
 
         return signal_peaks, peaks
@@ -306,5 +289,4 @@ class VisGraphDetector:
         return r_peaks
     
     
-
     
