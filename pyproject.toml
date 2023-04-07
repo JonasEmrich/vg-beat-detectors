@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vg-ecg-detectors"
+version = "0.0.1"
+authors = [
+    { name="Jonas Emrich", email="mail@jonasemrich.de" },
+    { name="Taulant Koka", email="taulant.koka@tu-darmstadt.de" }
+]
+maintainers = [
+    { name="Jonas Emrich", email="mail@jonasemrich.de" },
+    { name="Taulant Koka", email="taulant.koka@tu-darmstadt.de" }
+]
+dependencies = ["numpy", "scipy", "ts2vg"]
+description = "Fast and sample accurate R-peak detectors using visibility graphs."
+readme = "README.md"
+requires-python = ">=3.7"
+license.file = "LICENSE"
+keywords = ["cardiovascular", "ecg", "R-peak", "R-peak detector", "visibility graphs"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/JonasEmrich/vg-ecg-detectors"
+"Repository" = "https://github.com/JonasEmrich/vg-ecg-detectors"
+"Bug Tracker" = "https://github.com/JonasEmrich/vg-ecg-detectors/issues"
