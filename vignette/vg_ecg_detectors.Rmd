@@ -1,0 +1,116 @@
+---
+title: "Fast and Sample-Accurate R-Peak Detectors Based on Visibility Graphs"
+author: |
+  | Jonas Emrich, Taulant Koka, Sebastian Wirth, Michael Muma
+  |
+  | Technische Universität Darmstadt
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    theme: flatly
+    highlight: pygments
+    toc: yes
+    toc_depth: 1
+    toc_float: yes
+    css: vignette_styles.css
+  prettydoc::html_pretty:
+    theme: tactile
+    highlight: vignette
+    toc: yes
+    toc_depth: 2
+toc-title: "Table of Contents"    
+csl: the-annals-of-statistics.csl # citation style https://www.zotero.org/styles
+bibliography: refs.bib
+nocite: |
+  @emrich_vg_2023, @koka_vg_2022
+vignette: |
+  %\VignetteKeyword{ECG, R-peak detection, Visibility graph}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{Fast and Sample-Accurate R-Peak Detectors Based on Visibility Graphs}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+```{r, include = FALSE}
+# Store user's options()
+old_options <- options()
+
+library(knitr)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.align = "center",
+  fig.retina = 2,
+  out.width = "85%",
+  dpi = 96
+  # pngquant = "--speed=1"
+)
+options(width = 80)
+```
+
+------------------------------------------------------------------------
+
+# Motivation
+
+This python package provides an implementation of visibility graph based approaches for detecting R-peaks in ECG signals.
+The utilized visibility graph transformation maps a signal into a graph by representing sampling locations as nodes and establishing edges between mutually visible samples.
+The visibility graph based methods showed a significantly superior performance compared to popular R-peak detectors in benchmarking on several databases and demonstrated their ability to detect R-peaks sample accurate
+
+<!-- In benchmarking on several databases demonstrated a significantly superior performance of the VG-based methods compared to popular R-peak detectors and proved their ability to sample accurately detect R-peaks. -->
+
+
+
+# Installation
+
+You can install the 'vg-ecg-detectors' package from [GitHub](https://github.com/JonasEmrich/vg-ecg-detectors) with
+
+``` 
+pip install vg-ecg-detectors
+```
+
+# Quick Start
+
+In the following, the basic usage of the 'FastNVG' detector utilizing the natural visibility graph for in th R-peak detection is illustrated.
+
+
+## FastNVG
+
+```{python, eval=FALSE}
+from vg_ecg_detectors import FastNVG
+
+detector = FastNVG(sampling_frequency=fs)
+peaks_r, _ = detector.find_peaks(x)
+```
+
+## FastWHVG
+
+```{python, eval=FALSE}
+from vg_ecg_detectors import FastWHVG
+
+detector = FastWHVG(sampling_frequency=fs)
+peaks_r, _ = detector.find_peaks(x)
+```
+
+---
+
+
+
+
+# Advanced usage
+content
+
+## Visibility graph types
+content
+
+## Accelerated and non-accelerated processing
+content
+
+## Sparsity Parameter
+content
+** some formula ** $\beta \in [0, 1]$
+
+# Outlook
+
+...
+
+# References {.unnumbered}
+
+<!-- <div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0px;"></div> -->
