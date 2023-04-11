@@ -1,1 +1,2 @@
-from vg_ecg_detectors_emrich.visibilitygraphdetector import VisGraphDetector
+from vg_ecg_detectors_emrich.vg_detector import VisGraphDetector
+from vg_ecg_detectors_emrich.fast_whvg import FastWHVG

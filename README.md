@@ -1,14 +1,25 @@
-# Accelerated Sample-Accurate R-Peak Detectors Based on Visibility Graphs
-This repository provides an algorithm for R-peak detection in ECG-signals based on a visibility graph approach. As part of my bachelor thesis, I modified an existing algorithm [1] and applied an acceleration technique [2] which was modified further. 
-Those changes led to a significant improvement in terms of accuracy for the algorithm using the horizontal visibility graph, towards a level of the natural visibility graph or even greater. This was accomplished while the runtime was significantly reduced (for both visibility graph transformations).
-- [1] T. Koka and M. Muma, “Fast and Sample Accurate R-Peak Detection for Noisy ECG Using Visibility
-Graphs,” in 44th Annual International Conference of the IEEE Engineering in Medicine Biology Society
-(EMBC), July 2022.
-- [2] S. Wirth, “Radar-based blood pressure estimation,” M.S. Thesis, 2022.
+# Fast and sample-accurate R-peak detectors based on visibility graphs
 
-## Used Python & Packages
-- Python 3.10
-- ts2vg 1.0.0
-- scipy 1.8.0
-- numpy 1.22.3
+This python package provides an implementation of visibility graph based approaches for detecting R-peaks in ECG signals.
 
+The R-peak detection algorithms were proposed in [1] and [2] were also their ability to sample accurately detect R-peaks was numerically shown. Furthermore, benchmarks on several databases demonstrated a
+significantly superior performance of the VG-based methods compared to popular R-peak detectors.
+
+- [1] J. Emrich, T. Koka, S. Wirth, M. Muma, "Accelerated Sample-Accurate R-Peak Detectors Based on Visibility Graphs", in 31st European Signal Processing Conference (EUSIPCO), 2023
+- [2] T. Koka and M. Muma, "Fast and Sample Accurate R-Peak Detection for Noisy ECG Using Visibility Graphs", in 44th Annual International Conference of the IEEE Engineering in Medicine Biology Society (EMBC), July 2022.
+
+## Citation
+
+## Installation
+
+## Getting Started
+
+
+## Advanced usage
+### Visibility graph types
+### Accelerated and non-accelerated processing
+### Sparsity Parameter
+
+
+
+## References

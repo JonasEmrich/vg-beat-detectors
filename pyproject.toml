@@ -14,7 +14,7 @@ maintainers = [
     { name="Taulant Koka", email="taulant.koka@tu-darmstadt.de" }
 ]
 dependencies = ["numpy", "scipy", "ts2vg"]
-description = "Fast and sample accurate R-peak detectors using visibility graphs."
+description = "Fast and sample-accurate R-peak detectors based on visibility graphs."
 readme = "README.md"
 requires-python = ">=3.7"
 license.file = "LICENSE"
