@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2023-04-11" />
+<meta name="date" content="2023-04-12" />
 
 <title>Fast and Sample-Accurate R-Peak Detectors Based on Visibility Graphs</title>
 
@@ -1604,7 +1604,7 @@ Based on Visibility Graphs</h1>
 Sebastian Wirth, Michael Muma<br />
 <br />
 Technische Universität Darmstadt</div></h4>
-<h4 class="date">2023-04-11</h4>
+<h4 class="date">2023-04-12</h4>
 
 </div>
 
@@ -1613,55 +1613,144 @@ Technische Universität Darmstadt</div></h4>
 <div id="motivation" class="section level1">
 <h1>Motivation</h1>
 <p>This python package provides an implementation of visibility graph
-based approaches for detecting R-peaks in ECG signals. The utilized
-visibility graph transformation maps a signal into a graph by
-representing sampling locations as nodes and establishing edges between
-mutually visible samples. The visibility graph based methods showed a
-significantly superior performance compared to popular R-peak detectors
-in benchmarking on several databases and demonstrated their ability to
-detect R-peaks sample accurate</p>
-<!-- In benchmarking on several databases demonstrated a significantly superior performance of the VG-based methods compared to popular R-peak detectors and proved their ability to sample accurately detect R-peaks. -->
+(VG) based approaches for detecting R-peaks in ECG signals. The utilized
+visibility graph transformation maps a signal into a graph
+representation by expressing sampling locations as nodes and
+establishing edges between mutually visible samples.</p>
+<p>In <span class="citation">[1]</span>, <span class="citation">[2]</span> benchmarking on several popular databases
+showed that the visibility graph based methods provide a significantly
+superior performance compared to popular R-peak detectors and allow for
+a sample-accurate R-peak detection.</p>
 </div>
 <div id="installation" class="section level1">
 <h1>Installation</h1>
-<p>You can install the ‘vg-ecg-detectors’ package from <a href="https://github.com/JonasEmrich/vg-ecg-detectors">GitHub</a>
-with</p>
+<p>You can install the latest version of the ‘vg-ecg-detectors’ package
+from the <a href="https://pypi.org/project/vg-ecg-detectors/">Python
+Package Index (PyPI)</a> by running:</p>
 <pre><code>pip install vg-ecg-detectors</code></pre>
+<p>Additionally, the source code is available on <a href="https://github.com/JonasEmrich/vg-ecg-detectors">GitHub</a>.</p>
 </div>
 <div id="quick-start" class="section level1">
 <h1>Quick Start</h1>
-<p>In the following, the basic usage of the ‘FastNVG’ detector utilizing
-the natural visibility graph for in th R-peak detection is
-illustrated.</p>
-<div id="fastnvg" class="section level2">
-<h2>FastNVG</h2>
+<p>In the following, the basic usage of the ‘FastNVG’ and ‘FastWHVG’
+detectors <span class="citation">[1]</span> is illustrated, which
+utilize the natural visibility graph and a weighted horizontal
+visibility graph, respectively.</p>
+<p>The ‘vg-ecg-detetcors’ package provides ‘FastNVG’ and ‘FastWHVG’
+detector classes that are initialized with the <em>sampling
+frequency</em> ‘fs’ of the given ECG signal. R-peaks can then be
+determined by calling the detectors <code>find_peaks(ecg)</code> method
+and passing the ECG signal.</p>
+<ul>
+<li>FastNVG</li>
+</ul>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> vg_ecg_detectors <span class="im">import</span> FastNVG</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>detector <span class="op">=</span> FastNVG(sampling_frequency<span class="op">=</span>fs)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>peaks_r, _ <span class="op">=</span> detector.find_peaks(x)</span></code></pre></div>
-</div>
-<div id="fastwhvg" class="section level2">
-<h2>FastWHVG</h2>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>rpeaks <span class="op">=</span> detector.find_peaks(ecg)</span></code></pre></div>
+<ul>
+<li>FastWHVG</li>
+</ul>
 <div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> vg_ecg_detectors <span class="im">import</span> FastWHVG</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>detector <span class="op">=</span> FastWHVG(sampling_frequency<span class="op">=</span>fs)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>peaks_r, _ <span class="op">=</span> detector.find_peaks(x)</span></code></pre></div>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>rpeaks <span class="op">=</span> detector.find_peaks(ecg)</span></code></pre></div>
+<div id="complete-working-example" class="section level2">
+<h2>Complete Working Example</h2>
+<p>The following example demonstrates the usage of the ‘FastNVG’
+detector. The use of the ‘FastWHVG’ works analogously.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import the FastNVG detector</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> vg_ecg_detectors <span class="im">import</span> FastNVG</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># import packages used in this example</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.misc <span class="im">import</span> electrocardiogram</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># generate some ECG signal</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>fs <span class="op">=</span> <span class="dv">360</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>ecg <span class="op">=</span> electrocardiogram() <span class="co"># sampling frequency of this excerpt is 360Hz</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>time <span class="op">=</span> <span class="op">=</span> np.arange(ecg.size) <span class="op">/</span> fs</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># visibility graph R-peak detector</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>detector <span class="op">=</span> FastNVG(sampling_frequency<span class="op">=</span>fs)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>R_peaks <span class="op">=</span> detector.find_peaks(ecg)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co"># plot signal and detected peaks</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>plt.plot(time,ecg)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>plt.plot(time[R_peaks],ecg[R_peaks],<span class="st">&#39;X&#39;</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">&quot;time in s&quot;</span>)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">&quot;ECG in mV&quot;</span>)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>plt.xlim(<span class="dv">9</span>, <span class="fl">10.2</span>)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>plt.ylim(<span class="op">-</span><span class="dv">1</span>, <span class="fl">1.5</span>)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div>
 <hr />
 </div>
 </div>
 <div id="advanced-usage" class="section level1">
 <h1>Advanced usage</h1>
-<p>content</p>
+<p>For advanced and experimental usage the package provides a
+‘VisGraphDetector’ base class in which a number of parameters can be
+set. For further explanation and understanding of the listed options and
+their influence consult the papers <span class="citation">[2]</span>.</p>
+<p>The usage follows the same structure as above:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> vg_ecg_detectors <span class="im">import</span> VisGraphDetector</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>detector <span class="op">=</span> VisGraphDetector(sampling_frequency<span class="op">=</span><span class="dv">250</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                            lowcut<span class="op">=</span><span class="fl">4.0</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                            graph_type<span class="op">=</span><span class="st">&#39;nvg&#39;</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                            edge_weight<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                            beta<span class="op">=</span><span class="fl">0.55</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                            window_overlap<span class="op">=</span><span class="fl">0.5</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                            window_seconds<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>                            accelerated<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>                            </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>rpeaks <span class="op">=</span> detector.find_peaks(ecg)</span></code></pre></div>
 <div id="visibility-graph-types" class="section level2">
 <h2>Visibility graph types</h2>
-<p>content</p>
+<p>The underlying visibility graph transformation can be set with
+<code>graph_type</code>. The option ‘nvg’ results in the natural
+visibility graph and ‘hvg’ in the horizontal visibility graph.</p>
+</div>
+<div id="weighted-edges" class="section level2">
+<h2>Weighted Edges</h2>
+<p>The edges in the visibility graph representation can be constructed
+with a weighting factor. Therefore, the option <code>edge_weight</code>
+determines the metric for calculating the edge weight between two nodes
+(or samples).</p>
+<p>Available weights are ‘distance’, ‘sq_distance’, ‘v_distance’,
+‘abs_v_distance’, ‘h_distance’, ‘abs_h_distance’, ‘slope’, ‘abs_slope’,
+‘angle’ and ‘abs_angle’ as well as None for no weighting.</p>
+<p>For further explanation of each available weight see the <a href="https://cbergillos.com/ts2vg/api/graph_options.html#weighted-graphs">documentation
+of the ‘ts2vg’ package</a></p>
 </div>
 <div id="accelerated-and-non-accelerated-processing" class="section level2">
 <h2>Accelerated and non-accelerated processing</h2>
-<p>content</p>
+<p>The acceleration technique proposed in <span class="citation">[1]</span> which reduces the input signal to only local
+maxima samples can be enabled or disabled by setting
+<code>accelerated</code> to <code>False</code> or <code>True</code>
+respectively. The acceleration results in a reduced runtime by one
+magnitude while the detection accuracy remains comparable with the
+non-accelerated detector.</p>
 </div>
-<div id="sparsity-parameter" class="section level2">
-<h2>Sparsity Parameter</h2>
+<div id="sparsity-parameter-beta" class="section level2">
+<h2>Sparsity Parameter <span class="math inline">\(\beta\)</span></h2>
+<p>As described in <span class="citation">[2]</span> the choice of the
+sparsity parameter <span class="math inline">\(\beta \in [0, 1]\)</span>
+depends on the used visibility graph transformation and edge weights and
+is a crucial setting for a well functioning detector. Sparsity parameter
+values for the NVG and WHVG were determined by numerical experiments in
+<span class="citation">[2]</span>. We highly recommend to redetermine
+<code>beta</code> as described in <span class="citation">[2]</span>,
+when changes have been made in the <code>graph_type</code> and
+<code>edge_weight</code> options.</p>
+</div>
+<div id="segmentation-window" class="section level2">
+<h2>Segmentation Window</h2>
+<p>The processing of the ECG signal is made in segments with a default
+length of <span class="math inline">\(2 \sec\)</span>, i.e.,
+<code>window_seconds=2</code> and a overlap of <span class="math inline">\(50\%\)</span>, i.e,
+<code>window_seconds=0.5</code>.</p>
 <p>content ** some formula ** <span class="math inline">\(\beta \in [0,
 1]\)</span></p>
 </div>
