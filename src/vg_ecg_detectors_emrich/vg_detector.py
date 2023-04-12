@@ -107,8 +107,8 @@ class VisGraphDetector:
 
         # weight signal with obtained weight and use thresholding algorithm for peak location extraction
         weighted_sig = sig * weights
-        R_peaks, peaks = self._pantompkins_threshold(weighted_sig)
-        return R_peaks, peaks
+        R_peaks = self._pantompkins_threshold(weighted_sig)
+        return R_peaks
 
     def _filter_highpass(self, sig, order=2):
         nyq = 0.5 * self.fs
@@ -240,4 +240,4 @@ class VisGraphDetector:
             signal_peaks.pop(0)
         peaks.pop(0)
 
-        return np.array(signal_peaks), np.array(peaks)
+        return np.array(signal_peaks)
