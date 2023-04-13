@@ -18,25 +18,57 @@ _edge_weight_options = [None,
 
 class VisGraphDetector:
     """
-    Algorithm for fast and sample accurate R-peak detection in ECG signals based on visibility graphs.
-    Implementing the FastWHVG and FastNVG R-peak detectors [1] based on a weighted version of the horizontal visibility graph as well as the natural visibility graph.
-    Both detectors integrate an (optional) acceleration technique that reduces the computation time by an order of magnitude by processing only peak candidates of the input time series.
+    Base algorithm for detecting R-peaks in ECG signals using visibility graphs [1,2].
+    This class is intended for advanced and experimental usage while the classes of the proposed detectors``FastNVG``
+    and ``FastWHVG`` are implemented for a ready-to-use experience.
 
-    Authors: Jonas Emrich, Taulant Koka [2]
+    Please consult the papers [1,2] for a further detailed explanation and understanding of the options and parameters
+    available in this class.
 
-    [1] J. Emrich, T. Koka, S. Wirth, M. Muma, "Accelerated Sample-Accurate R-peak Detectors Based on Visibility Graphs", 31st European Signal Processing Conference (EUSIPCO), 2023
-    [2] T. Koka and M. Muma, "Fast and Sample Accurate R-Peak Detection for Noisy ECG Using Visibility Graphs", 44th Annual International Conference of the IEEE Engineering in Medicine & Biology Society (EMBC), 2022, pp. 121-126
+    Parameters
+    ----------
+    sampling_frequency : int
+        The sampling frequency of the ECG signal in which R-peaks will be detected (in Hz, samples/second).
+        Defaults to 250
+    graph_type : str
+        Specifies the visibility graph transformation used for computation. Has to be one of ["nvg", "hvg"].
+        Defaults to ``"nvg"``
+    edge_weight : str
+        Specifies the metric used to weight the edges in the visibility graph. For unweighted edges choose ``None``.
+        Has to be one of [None, 'slope', 'abs_slope', 'angle', 'abs_angle', 'distance', 'sq_distance', 'v_distance',
+        'abs_v_distance', 'h_distance', 'abs_h_distance']. For further details consult the ts2vg package.
+        Defaults to ``None``
+    beta : float
+        Sparsity parameter (between 0 and 1) that determines the termination of the k-Hop paths algorithm. Must be
+        determined with respect to the used visibility graph and edge weight. Proposed values are 0.55 for the NVG and
+        0.85 for the HVG. Defaults to 0.55
+    accelerated : bool
+        Enables the data pre-processing in which the input signal is reduced only to local maxima which reduces the
+        computation time by one order of magnitude while th performance remains comparable. Defaults to False.
+    window_length : float
+        Length of on data segment (in seconds!) used in the segment-wise processing of the ECG signal. Defaults to 2
+    window_overlap : float
+        Overlap percentage (between 0 and 1) of the data segments used in the segment-wise computation. Defaults to 0.5
+    lowcut : float
+        Cutoff frequency of the input highpass filter (in Hz). Defaults to 4.0
+
+    References
+    ----------
+    * [1] J. Emrich, T. Koka, S. Wirth, M. Muma, "Accelerated Sample-Accurate R-peak Detectors Based on Visibility Graphs",
+      31st European Signal Processing Conference (EUSIPCO), 2023
+    * [2] T. Koka and M. Muma, "Fast and Sample Accurate R-Peak Detection for Noisy ECG Using Visibility Graphs",
+      44th Annual International Conference of the IEEE Engineering in Medicine & Biology Society (EMBC), 2022, pp. 121-126
     """
 
     def __init__(self,
                  sampling_frequency=250,
-                 lowcut=4.0,
-                 graph_type='nvg',
+                 graph_type="nvg",
                  edge_weight=None,
                  beta=0.55,
+                 accelerated=False,
                  window_overlap=0.5,
-                 window_seconds=2,
-                 accelerated=False):
+                 window_length=2,
+                 lowcut=4.0):
 
         if sampling_frequency < 0:
             raise ValueError(f"'sampling_frequency' cannot be negative (got {sampling_frequency}).")
@@ -60,13 +92,27 @@ class VisGraphDetector:
             raise ValueError(f"'window_overlap' mus be a value in the interval [0.0;1.0] (got {window_overlap}).")
         self.window_overlap = window_overlap
 
-        if window_seconds < 0:
-            raise ValueError(f"'window_seconds' cannot be negative (got {window_seconds}).")
-        self.window_seconds = window_seconds
+        if window_length < 0:
+            raise ValueError(f"'window_seconds' cannot be negative (got {window_length}).")
+        self.window_seconds = window_length
 
         self.accelerated = accelerated
 
     def find_peaks(self, sig):
+        """
+        Detects R-peaks in ECG signals using visibility graphs.
+
+        Parameters
+        ----------
+        sig : np.array
+            The ECG signal which will be processed.
+
+        Returns
+        -------
+        R_peaks : np.array
+            Array containing the sample locations (indices) of the determined R-peaks.
+
+        """
         # initialize some variables
         N = len(sig)  # total signal length
         M = int(self.window_seconds * self.fs)  # length of window segment
@@ -111,12 +157,14 @@ class VisGraphDetector:
         return R_peaks
 
     def _filter_highpass(self, sig, order=2):
+        """implements a butterworth highpass filter"""
         nyq = 0.5 * self.fs
         high = self.lowcut / nyq
         b, a = signal.butter(order, high, btype='highpass')
         return signal.filtfilt(b, a, sig)
 
     def _calculate_weights(self, sig):
+        """calculates k-Hop weights from adjacency matrix"""
         if self.accelerated:
             ts, xs = self._reduce(sig)
         else:
@@ -127,7 +175,7 @@ class VisGraphDetector:
         return w, ts
 
     def _reduce(self, sig):
-        # reduce signal length by only considering sufficiently large local peaks
+        """reduces signal by only considering sufficiently large local peaks"""
         threshold = np.quantile(sig, 0.5)
         indices = signal.find_peaks(sig)[0]
         values = sig[indices]
@@ -135,8 +183,8 @@ class VisGraphDetector:
         return indices[greater], values[greater]
 
     def _ts2adjacency(self, ts, xs):
+        """translates time series (ts, xs) into visibility graph representation and returns adjacency matrix"""
         size = len(xs)
-
         # calculate the visibility graph
         if self.graph_type in ['nvg', 'NVG']:
             vg = NaturalVG(directed='top_to_bottom', weighted=self.edge_weight)
@@ -151,7 +199,7 @@ class VisGraphDetector:
         return adjacency
 
     def _khop_paths(self, adjacency, beta):
-        # calculate weights through iterative k-Hop paths metric
+        """calculates weights through iterative k-Hop paths metric"""
         size = len(adjacency)
         w = np.ones(size) / size
         while np.count_nonzero(w) > beta * size:
@@ -163,9 +211,13 @@ class VisGraphDetector:
         return w
 
     def _pantompkins_threshold(self, weight):
-        """ Based on the python implementation [3] of the thresholding proposed by Pan and Tompkins in [4].
+        """
+        Based on the python implementation [3] of the thresholding proposed by Pan and Tompkins in [4].
         Modifications were made with respect to the application of R-peak detection using visibility graphs
         and the k-Hop paths metric.
+
+        References
+        ----------
         [3] https://github.com/berndporr/py-ecg-detectors
         [4] J. Pan and W. J. Tompkins, “A Real-Time QRS Detection Algorithm”, IEEE Transactions on Biomedical
          Engineering, vol. BME-32, Mar. 1985. pp. 230-236.
