@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2023-04-12" />
+<meta name="date" content="2023-04-13" />
 
 <title>Fast and Sample-Accurate R-Peak Detectors Based on Visibility Graphs</title>
 
@@ -1604,7 +1604,7 @@ Based on Visibility Graphs</h1>
 Sebastian Wirth, Michael Muma<br />
 <br />
 Technische Universität Darmstadt</div></h4>
-<h4 class="date">2023-04-12</h4>
+<h4 class="date">2023-04-13</h4>
 
 </div>
 
@@ -1612,15 +1612,15 @@ Technische Universität Darmstadt</div></h4>
 <hr />
 <div id="motivation" class="section level1">
 <h1>Motivation</h1>
-<p>This python package provides an implementation of visibility graph
+<p>This Python package provides an implementation of visibility graph
 (VG) based approaches for detecting R-peaks in ECG signals. The utilized
 visibility graph transformation maps a signal into a graph
 representation by expressing sampling locations as nodes and
 establishing edges between mutually visible samples.</p>
 <p>In <span class="citation">[1]</span>, <span class="citation">[2]</span> benchmarking on several popular databases
-showed that the visibility graph based methods provide a significantly
+showed that the visibility graph based methods provide significantly
 superior performance compared to popular R-peak detectors and allow for
-a sample-accurate R-peak detection.</p>
+sample-accurate R-peak detection.</p>
 </div>
 <div id="installation" class="section level1">
 <h1>Installation</h1>
@@ -1670,7 +1670,7 @@ detector. The use of the ‘FastWHVG’ works analogously.</p>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># generate some ECG signal</span></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>fs <span class="op">=</span> <span class="dv">360</span></span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>ecg <span class="op">=</span> electrocardiogram() <span class="co"># sampling frequency of this excerpt is 360Hz</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>time <span class="op">=</span> <span class="op">=</span> np.arange(ecg.size) <span class="op">/</span> fs</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>time <span class="op">=</span> np.arange(ecg.size) <span class="op">/</span> fs</span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># visibility graph R-peak detector</span></span>
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>detector <span class="op">=</span> FastNVG(sampling_frequency<span class="op">=</span>fs)</span>
@@ -1688,7 +1688,7 @@ detector. The use of the ‘FastWHVG’ works analogously.</p>
 </div>
 </div>
 <div id="advanced-usage" class="section level1">
-<h1>Advanced usage</h1>
+<h1>Advanced Usage</h1>
 <p>For advanced and experimental usage the package provides a
 ‘VisGraphDetector’ base class in which a number of parameters can be
 set. For further explanation and understanding of the listed options and
@@ -1697,13 +1697,13 @@ their influence consult the papers <span class="citation">[2]</span>.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> vg_ecg_detectors <span class="im">import</span> VisGraphDetector</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>detector <span class="op">=</span> VisGraphDetector(sampling_frequency<span class="op">=</span><span class="dv">250</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                            lowcut<span class="op">=</span><span class="fl">4.0</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                            graph_type<span class="op">=</span><span class="st">&#39;nvg&#39;</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                            edge_weight<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                            beta<span class="op">=</span><span class="fl">0.55</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                            graph_type<span class="op">=</span><span class="st">&#39;nvg&#39;</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                            edge_weight<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                            beta<span class="op">=</span><span class="fl">0.55</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                            accelerated<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                            window_overlap<span class="op">=</span><span class="fl">0.5</span>,</span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                            window_seconds<span class="op">=</span><span class="dv">2</span>,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>                            accelerated<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>                            lowcut<span class="op">=</span><span class="fl">4.0</span>)</span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>                            </span>
 <span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>rpeaks <span class="op">=</span> detector.find_peaks(ecg)</span></code></pre></div>
 <div id="visibility-graph-types" class="section level2">
@@ -1713,7 +1713,7 @@ their influence consult the papers <span class="citation">[2]</span>.</p>
 visibility graph and ‘hvg’ in the horizontal visibility graph.</p>
 </div>
 <div id="weighted-edges" class="section level2">
-<h2>Weighted Edges</h2>
+<h2>Weighted edges</h2>
 <p>The edges in the visibility graph representation can be constructed
 with a weighting factor. Therefore, the option <code>edge_weight</code>
 determines the metric for calculating the edge weight between two nodes
@@ -1729,34 +1729,42 @@ of the ‘ts2vg’ package</a></p>
 <p>The acceleration technique proposed in <span class="citation">[1]</span> which reduces the input signal to only local
 maxima samples can be enabled or disabled by setting
 <code>accelerated</code> to <code>False</code> or <code>True</code>
-respectively. The acceleration results in a reduced runtime by one
+respectively. The acceleration results in a reduced run-time by one
 magnitude while the detection accuracy remains comparable with the
 non-accelerated detector.</p>
 </div>
 <div id="sparsity-parameter-beta" class="section level2">
-<h2>Sparsity Parameter <span class="math inline">\(\beta\)</span></h2>
+<h2>Sparsity parameter <span class="math inline">\(\beta\)</span></h2>
 <p>As described in <span class="citation">[2]</span> the choice of the
 sparsity parameter <span class="math inline">\(\beta \in [0, 1]\)</span>
 depends on the used visibility graph transformation and edge weights and
-is a crucial setting for a well functioning detector. Sparsity parameter
+is a crucial setting for a well-functioning detector. Sparsity parameter
 values for the NVG and WHVG were determined by numerical experiments in
-<span class="citation">[2]</span>. We highly recommend to redetermine
+<span class="citation">[2]</span>. We highly recommend redetermining
 <code>beta</code> as described in <span class="citation">[2]</span>,
 when changes have been made in the <code>graph_type</code> and
 <code>edge_weight</code> options.</p>
 </div>
-<div id="segmentation-window" class="section level2">
-<h2>Segmentation Window</h2>
+<div id="adjusting-segments" class="section level2">
+<h2>Adjusting segments</h2>
 <p>The processing of the ECG signal is made in segments with a default
-length of <span class="math inline">\(2 \sec\)</span>, i.e.,
-<code>window_seconds=2</code> and a overlap of <span class="math inline">\(50\%\)</span>, i.e,
-<code>window_seconds=0.5</code>.</p>
-<p>content ** some formula ** <span class="math inline">\(\beta \in [0,
-1]\)</span></p>
+length of <span class="math inline">\(2 \sec\)</span> and an overlap of
+<span class="math inline">\(50\%\)</span>, i.e,
+<code>window_seconds=2</code> and <code>window_seconds=0.5</code>.</p>
+</div>
+<div id="setting-highpass-cutoff-frequency" class="section level2">
+<h2>Setting highpass cutoff frequency</h2>
+<p>To change the lower cutoff frequency of the highpass filter that
+pre-processes the input ECG signal, the parameter <code>lowcut</code>
+can be adjusted. The default value is <span class="math inline">\(4
+\mathrm{Hz}\)</span>.</p>
 </div>
 </div>
 <div id="outlook" class="section level1">
 <h1>Outlook</h1>
+<p>Adapting the methods for related biomedical signals, such as PPG
+signals, is of great interest and will be the subject to future
+work.</p>
 <p>…</p>
 </div>
 <div id="references" class="section level1 unnumbered">
