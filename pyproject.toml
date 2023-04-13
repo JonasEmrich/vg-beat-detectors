@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vg-ecg-detectors"
-version = "0.0.4"
+version = "0.0.6"
 authors = [
     { name="Jonas Emrich", email="mail@jonasemrich.de" },
     { name="Taulant Koka", email="taulant.koka@tu-darmstadt.de" }

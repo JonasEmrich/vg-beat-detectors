@@ -1,4 +1,4 @@
-from vg_detector import VisGraphDetector
+from vg_ecg_detectors_emrich.vg_detector import VisGraphDetector
 
 
 class FastNVG(VisGraphDetector):
