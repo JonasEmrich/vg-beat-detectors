@@ -154,13 +154,13 @@ transformation and edge weights and is a crucial setting for a
 well-functioning detector. Sparsity parameter values for the NVG and
 WHVG were determined by numerical experiments in
 \[[2](#References)\]. We highly recommend redetermining `beta` as
-described in \[[2](#References)\], when changes have been made in
+described in \[[2](#ref-koka_vg_2022)\], when changes have been made in
 the `graph_type` and `edge_weight` options.
 
 ## Adjusting segments
 
 The processing of the ECG signal is made in segments with a default
-length of 2sec and an overlap of 50%, i.e, `window_seconds=2` and
+length of 2sec  and an overlap of 50%, i.e, `window_seconds=2` and
 `window_seconds=0.5`.
 
 ## Setting highpass cutoff frequency
@@ -188,7 +188,7 @@ class="smallcaps">Muma</span>, M. (2023). [<span
 class="nocase">Accelerated Sample-Accurate R-Peak Detectors Based on
 Visibility Graphs</span>]().</span>
 
-<span class="csl-left-margin">\[2\] </span><span
+<span id="#ref-koka_vg_2022" class="csl-left-margin">\[2\] </span><span
 class="csl-right-inline"><span class="smallcaps">Koka</span>, T. and
 <span class="smallcaps">Muma</span>, M. (2022). [<span
 class="nocase">Fast and Sample Accurate R-Peak Detection for Noisy ECG
