@@ -154,7 +154,7 @@ transformation and edge weights and is a crucial setting for a
 well-functioning detector. Sparsity parameter values for the NVG and
 WHVG were determined by numerical experiments in
 \[[2](#References)\]. We highly recommend redetermining `beta` as
-described in \[[2](#ref-koka_vg_2022)\], when changes have been made in
+described in \[[2](#ref-koka_vg_2022)\] [#koka]_, when changes have been made in
 the `graph_type` and `edge_weight` options.
 
 ## Adjusting segments
@@ -179,6 +179,9 @@ signals, is of great interest and will be the subject to future work.
 # References
 
 <!-- <div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0px;"></div> -->
+
+.. [#koka] Qi Xuan et al., "*CLPVG: Circular limited penetrable visibility graph as a new network model for time series*", 2021
+
 
 <span class="csl-left-margin">\[1\] </span><span
 class="csl-right-inline"><span class="smallcaps">Emrich</span>, J.,
