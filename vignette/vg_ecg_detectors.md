@@ -8,7 +8,7 @@ visibility graph transformation maps a signal into a graph
 representation by expressing sampling locations as nodes and
 establishing edges between mutually visible samples.
 
-In \[[1](#ref-emrich_vg_2023)\], \[[2](#ref-koka_vg_2022)\] benchmarking
+In \[[1](#References)\], \[[2](#References)\] benchmarking
 on several popular databases showed that the visibility graph based
 methods provide significantly superior performance compared to popular
 R-peak detectors and allow for sample-accurate R-peak detection.
@@ -27,7 +27,7 @@ Additionally, the source code is available on
 # Quick Start
 
 In the following, the basic usage of the ‘FastNVG’ and ‘FastWHVG’
-detectors \[[1](#ref-emrich_vg_2023)\] is illustrated, which utilize the
+detectors \[[1](#References)\] is illustrated, which utilize the
 natural visibility graph and a weighted horizontal visibility graph,
 respectively.
 
@@ -98,7 +98,7 @@ plt.show()
 For advanced and experimental usage the package provides a
 ‘VisGraphDetector’ base class in which a number of parameters can be
 set. For further explanation and understanding of the listed options and
-their influence consult the papers \[[2](#ref-koka_vg_2022)\].
+their influence consult the papers \[[2](#References)\].
 
 The usage follows the same structure as above:
 
@@ -139,7 +139,7 @@ package](https://cbergillos.com/ts2vg/api/graph_options.html#weighted-graphs)
 
 ## Accelerated and non-accelerated processing
 
-The acceleration technique proposed in \[[1](#ref-emrich_vg_2023)\]
+The acceleration technique proposed in \[[1](#References)\]
 which reduces the input signal to only local maxima samples can be
 enabled or disabled by setting `accelerated` to `False` or `True`
 respectively. The acceleration results in a reduced run-time by one
@@ -148,19 +148,19 @@ non-accelerated detector.
 
 ## Sparsity parameter *β*
 
-As described in \[[2](#ref-koka_vg_2022)\] the choice of the sparsity
+As described in \[[2](#References)\] the choice of the sparsity
 parameter *β* ∈ \[0,1\] depends on the used visibility graph
 transformation and edge weights and is a crucial setting for a
 well-functioning detector. Sparsity parameter values for the NVG and
 WHVG were determined by numerical experiments in
-\[[2](#ref-koka_vg_2022)\]. We highly recommend redetermining `beta` as
-described in \[[2](#ref-koka_vg_2022)\], when changes have been made in
+\[[2](#References)\]. We highly recommend redetermining `beta` as
+described in \[[2](#References)\], when changes have been made in
 the `graph_type` and `edge_weight` options.
 
 ## Adjusting segments
 
 The processing of the ECG signal is made in segments with a default
-length of 2sec  and an overlap of 50%, i.e, `window_seconds=2` and
+length of 2sec and an overlap of 50%, i.e, `window_seconds=2` and
 `window_seconds=0.5`.
 
 ## Setting highpass cutoff frequency
