@@ -1,6 +1,4 @@
-------------------------------------------------------------------------
-
-# Motivation
+# Fast and Sample-Accurate R-Peak Detectors Based on Visibility Graphs
 
 This Python package provides an implementation of visibility graph (VG)
 based approaches for detecting R-peaks in ECG signals. The utilized
@@ -14,7 +12,7 @@ the visibility graph based methods allow for sample-accurate R-peak
 detection and provide significantly superior performance compared to
 popular R-peak detectors.
 
-# Installation
+## Installation
 
 You can install the latest version of the 'vg-ecg-detectors' package
 from the [Python Package Index
@@ -25,7 +23,7 @@ from the [Python Package Index
 Additionally, the source code is available on
 [GitHub](https://github.com/JonasEmrich/vg-ecg-detectors).
 
-# Quick Start
+## Quick Start
 
 In the following, the basic usage of the 'FastNVG' and 'FastWHVG'
 detectors \[1\] is illustrated, which utilize the natural visibility
@@ -58,7 +56,7 @@ detector = FastWHVG(sampling_frequency=fs)
 rpeaks = detector.find_peaks(ecg)
 ```
 
-## Complete Working Example
+### Complete Working Example
 
 The next example demonstrates the application of the 'FastNVG' detector
 using real-world ECG data provided by the 'scipy' package. The
@@ -98,7 +96,7 @@ plt.show()
 
 ------------------------------------------------------------------------
 
-# Advanced Usage
+## Advanced Usage
 
 For advanced and experimental usage the package provides the
 'VisGraphDetector' base class in which a number of parameters can be set
@@ -123,13 +121,13 @@ detector = VisGraphDetector(sampling_frequency=250,
 rpeaks = detector.find_peaks(ecg)
 ```
 
-## Visibility graph types
+### Visibility graph types
 
 The underlying visibility graph transformation can be selected with
 `graph_type`. The option 'nvg' results in the natural visibility graph
 and 'hvg' in the horizontal visibility graph.
 
-## Weighted edges
+### Weighted edges
 
 The edges in the visibility graph representation can be constructed with
 a weighting factor. Therefore, the option `edge_weight` determines the
@@ -143,7 +141,7 @@ For further explanation of each available weight see the [documentation
 of the 'ts2vg'
 package](https://cbergillos.com/ts2vg/api/graph_options.html#weighted-graphs)
 
-## Accelerated and non-accelerated processing
+### Accelerated and non-accelerated processing
 
 The acceleration technique proposed in \[1\] which reduces the input
 signal to only local maxima samples can be enabled or disabled by
@@ -152,7 +150,7 @@ acceleration results in a reduced run-time by one order of magnitude
 while the detection accuracy remains comparable with the non-accelerated
 detector.
 
-## Sparsity parameter $??$
+### Sparsity parameter $\beta$
 
 As described in \[2\] the choice of the sparsity parameter $\beta \in [0, 1]$
 depends on the used visibility graph transformation and edge weights and
@@ -162,20 +160,20 @@ values for the NVG and WHVG were determined by numerical experiments in
 when changes have been made to the `graph_type` and `edge_weight`
 options.
 
-## Adjusting segments
+### Adjusting segments
 
 The input ECG signal is processed segment-wise using segments with a
 default length of 2sec and an overlap of 50%, i.e., `window_seconds=2`
 and `window_seconds=0.5`. Thus, these parameters allow adjustments to
 the segment-wise computation.
 
-## Setting highpass cutoff frequency
+### Setting highpass cutoff frequency
 
 To change the lower cutoff frequency of the highpass filter that
 pre-processes the input ECG signal, the parameter `lowcut` can be
 modified The default value is 4Hz.
 
-# References
+## References
 
 <!-- <div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0px;"></div> -->
 
