@@ -6,8 +6,6 @@ author: |
   | Technische Universität Darmstadt
 date: "`r Sys.Date()`"
 output:
-#   md_document:
-#     variant: markdown_github
   html_document:
     theme: flatly
     highlight: pygments
@@ -22,6 +20,9 @@ output:
     toc: yes
     toc_depth: 2
 link-citations: true
+  # md_document:
+  #   variant: markdown_github
+
 toc-title: "Table of Contents"    
 csl: the-annals-of-statistics.csl # citation style https://www.zotero.org/styles
 bibliography: refs.bib
