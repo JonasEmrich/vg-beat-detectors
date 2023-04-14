@@ -13,11 +13,15 @@ output:
     toc_depth: 1
     toc_float: yes
     css: vignette_styles.css
+    keep_md: yes
   prettydoc::html_pretty:
     theme: tactile
     highlight: vignette
     toc: yes
     toc_depth: 2
+  md_document:
+    variant: markdown_github
+link-citations: true
 toc-title: "Table of Contents"    
 csl: the-annals-of-statistics.csl # citation style https://www.zotero.org/styles
 bibliography: refs.bib

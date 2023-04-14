@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2023-04-13" />
+<meta name="date" content="2023-04-14" />
 
 <title>Fast and Sample-Accurate R-Peak Detectors Based on Visibility Graphs</title>
 
@@ -1604,7 +1604,7 @@ Based on Visibility Graphs</h1>
 Sebastian Wirth, Michael Muma<br />
 <br />
 Technische Universität Darmstadt</div></h4>
-<h4 class="date">2023-04-13</h4>
+<h4 class="date">2023-04-14</h4>
 
 </div>
 
@@ -1617,10 +1617,10 @@ Technische Universität Darmstadt</div></h4>
 visibility graph transformation maps a signal into a graph
 representation by expressing sampling locations as nodes and
 establishing edges between mutually visible samples.</p>
-<p>In <span class="citation">[1]</span>, <span class="citation">[2]</span> benchmarking on several popular databases
-showed that the visibility graph based methods provide significantly
-superior performance compared to popular R-peak detectors and allow for
-sample-accurate R-peak detection.</p>
+<p>In <span class="citation">[<a href="#ref-emrich_vg_2023" role="doc-biblioref">1</a>]</span>, <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span> benchmarking
+on several popular databases showed that the visibility graph based
+methods provide significantly superior performance compared to popular
+R-peak detectors and allow for sample-accurate R-peak detection.</p>
 </div>
 <div id="installation" class="section level1">
 <h1>Installation</h1>
@@ -1633,9 +1633,9 @@ Package Index (PyPI)</a> by running:</p>
 <div id="quick-start" class="section level1">
 <h1>Quick Start</h1>
 <p>In the following, the basic usage of the ‘FastNVG’ and ‘FastWHVG’
-detectors <span class="citation">[1]</span> is illustrated, which
-utilize the natural visibility graph and a weighted horizontal
-visibility graph, respectively.</p>
+detectors <span class="citation">[<a href="#ref-emrich_vg_2023" role="doc-biblioref">1</a>]</span> is illustrated, which utilize the
+natural visibility graph and a weighted horizontal visibility graph,
+respectively.</p>
 <p>The ‘vg-ecg-detetcors’ package provides ‘FastNVG’ and ‘FastWHVG’
 detector classes that are initialized with the <em>sampling
 frequency</em> ‘fs’ of the given ECG signal. R-peaks can then be
@@ -1695,7 +1695,7 @@ detector. The use of the ‘FastWHVG’ works analogously.</p>
 <p>For advanced and experimental usage the package provides a
 ‘VisGraphDetector’ base class in which a number of parameters can be
 set. For further explanation and understanding of the listed options and
-their influence consult the papers <span class="citation">[2]</span>.</p>
+their influence consult the papers <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span>.</p>
 <p>The usage follows the same structure as above:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> vg_ecg_detectors <span class="im">import</span> VisGraphDetector</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -1729,23 +1729,22 @@ of the ‘ts2vg’ package</a></p>
 </div>
 <div id="accelerated-and-non-accelerated-processing" class="section level2">
 <h2>Accelerated and non-accelerated processing</h2>
-<p>The acceleration technique proposed in <span class="citation">[1]</span> which reduces the input signal to only local
-maxima samples can be enabled or disabled by setting
-<code>accelerated</code> to <code>False</code> or <code>True</code>
-respectively. The acceleration results in a reduced run-time by one
-magnitude while the detection accuracy remains comparable with the
-non-accelerated detector.</p>
+<p>The acceleration technique proposed in <span class="citation">[<a href="#ref-emrich_vg_2023" role="doc-biblioref">1</a>]</span> which
+reduces the input signal to only local maxima samples can be enabled or
+disabled by setting <code>accelerated</code> to <code>False</code> or
+<code>True</code> respectively. The acceleration results in a reduced
+run-time by one magnitude while the detection accuracy remains
+comparable with the non-accelerated detector.</p>
 </div>
 <div id="sparsity-parameter-beta" class="section level2">
 <h2>Sparsity parameter <span class="math inline">\(\beta\)</span></h2>
-<p>As described in <span class="citation">[2]</span> the choice of the
-sparsity parameter <span class="math inline">\(\beta \in [0, 1]\)</span>
-depends on the used visibility graph transformation and edge weights and
-is a crucial setting for a well-functioning detector. Sparsity parameter
-values for the NVG and WHVG were determined by numerical experiments in
-<span class="citation">[2]</span>. We highly recommend redetermining
-<code>beta</code> as described in <span class="citation">[2]</span>,
-when changes have been made in the <code>graph_type</code> and
+<p>As described in <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span> the choice of the sparsity parameter
+<span class="math inline">\(\beta \in [0, 1]\)</span> depends on the
+used visibility graph transformation and edge weights and is a crucial
+setting for a well-functioning detector. Sparsity parameter values for
+the NVG and WHVG were determined by numerical experiments in <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span>. We highly recommend redetermining
+<code>beta</code> as described in <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span>, when
+changes have been made in the <code>graph_type</code> and
 <code>edge_weight</code> options.</p>
 </div>
 <div id="adjusting-segments" class="section level2">
