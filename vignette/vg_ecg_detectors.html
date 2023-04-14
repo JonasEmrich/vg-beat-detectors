@@ -1614,13 +1614,15 @@ Technische Universität Darmstadt</div></h4>
 <h1>Motivation</h1>
 <p>This Python package provides an implementation of visibility graph
 (VG) based approaches for detecting R-peaks in ECG signals. The utilized
-visibility graph transformation maps a signal into a graph
+visibility graph transformation maps a given signal into a graph
 representation by expressing sampling locations as nodes and
-establishing edges between mutually visible samples.</p>
+establishing edges between mutually visible samples. Subsequently, graph
+information is used to determine the R-peak positions.</p>
 <p>In <span class="citation">[<a href="#ref-emrich_vg_2023" role="doc-biblioref">1</a>]</span>, <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span> benchmarking
 on several popular databases showed that the visibility graph based
-methods provide significantly superior performance compared to popular
-R-peak detectors and allow for sample-accurate R-peak detection.</p>
+methods allow for sample-accurate R-peak detection and provide
+significantly superior performance compared to popular R-peak
+detectors.</p>
 </div>
 <div id="installation" class="section level1">
 <h1>Installation</h1>
@@ -1634,13 +1636,15 @@ Package Index (PyPI)</a> by running:</p>
 <h1>Quick Start</h1>
 <p>In the following, the basic usage of the ‘FastNVG’ and ‘FastWHVG’
 detectors <span class="citation">[<a href="#ref-emrich_vg_2023" role="doc-biblioref">1</a>]</span> is illustrated, which utilize the
-natural visibility graph and a weighted horizontal visibility graph,
-respectively.</p>
-<p>The ‘vg-ecg-detetcors’ package provides ‘FastNVG’ and ‘FastWHVG’
-detector classes that are initialized with the <em>sampling
-frequency</em> ‘fs’ of the given ECG signal. R-peaks can then be
-determined by calling the detectors <code>find_peaks(ecg)</code> method
-and passing the ECG signal.</p>
+natural visibility graph (NVG) and weighted horizontal visibility graph
+(WHVG), respectively.</p>
+<p>The package provides for both detectors an identically named class
+that is initialized with the <em>sampling frequency</em> ‘fs’ of the
+given ECG signal. R-peaks can then be determined by calling the
+detectors <code>find_peaks(ecg)</code> method and passing the ECG
+signal.</p>
+<p>This is exemplified in the following by means of the pseudo variables
+<code>fs</code>and <code>ecg</code>:</p>
 <ul>
 <li>FastNVG</li>
 </ul>
@@ -1657,8 +1661,9 @@ and passing the ECG signal.</p>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>rpeaks <span class="op">=</span> detector.find_peaks(ecg)</span></code></pre></div>
 <div id="complete-working-example" class="section level2">
 <h2>Complete Working Example</h2>
-<p>The following example demonstrates the usage of the ‘FastNVG’
-detector. The use of the ‘FastWHVG’ works analogously.</p>
+<p>The next example demonstrates the application of the ‘FastNVG’
+detector using real-world ECG data provided by the ‘scipy’ package. The
+utilization of the ‘FastWHVG’ is analogous.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import the FastNVG detector</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> vg_ecg_detectors_emrich <span class="im">import</span> FastNVG</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1692,11 +1697,12 @@ detector. The use of the ‘FastWHVG’ works analogously.</p>
 </div>
 <div id="advanced-usage" class="section level1">
 <h1>Advanced Usage</h1>
-<p>For advanced and experimental usage the package provides a
-‘VisGraphDetector’ base class in which a number of parameters can be
-set. For further explanation and understanding of the listed options and
-their influence consult the papers <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span>.</p>
-<p>The usage follows the same structure as above:</p>
+<p>For advanced and experimental usage the package provides the
+‘VisGraphDetector’ base class in which a number of parameters can be set
+which will be briefly explained in the next paragraphs. For further
+understanding of the listed options and their influence on the
+algorithm, you might want to consult the papers <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span>.</p>
+<p>The advanced usage follows the same structure as presented above:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> vg_ecg_detectors <span class="im">import</span> VisGraphDetector</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>detector <span class="op">=</span> VisGraphDetector(sampling_frequency<span class="op">=</span><span class="dv">250</span>,</span>
@@ -1711,7 +1717,7 @@ their influence consult the papers <span class="citation">[<a href="#ref-koka_vg
 <span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>rpeaks <span class="op">=</span> detector.find_peaks(ecg)</span></code></pre></div>
 <div id="visibility-graph-types" class="section level2">
 <h2>Visibility graph types</h2>
-<p>The underlying visibility graph transformation can be set with
+<p>The underlying visibility graph transformation can be selected with
 <code>graph_type</code>. The option ‘nvg’ results in the natural
 visibility graph and ‘hvg’ in the horizontal visibility graph.</p>
 </div>
@@ -1731,9 +1737,9 @@ of the ‘ts2vg’ package</a></p>
 <h2>Accelerated and non-accelerated processing</h2>
 <p>The acceleration technique proposed in <span class="citation">[<a href="#ref-emrich_vg_2023" role="doc-biblioref">1</a>]</span> which
 reduces the input signal to only local maxima samples can be enabled or
-disabled by setting <code>accelerated</code> to <code>False</code> or
-<code>True</code> respectively. The acceleration results in a reduced
-run-time by one magnitude while the detection accuracy remains
+disabled by setting <code>accelerated</code> to <code>True</code> or
+<code>False</code>, respectively. The acceleration results in a reduced
+run-time by one order of magnitude while the detection accuracy remains
 comparable with the non-accelerated detector.</p>
 </div>
 <div id="sparsity-parameter-beta" class="section level2">
@@ -1744,30 +1750,24 @@ used visibility graph transformation and edge weights and is a crucial
 setting for a well-functioning detector. Sparsity parameter values for
 the NVG and WHVG were determined by numerical experiments in <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span>. We highly recommend redetermining
 <code>beta</code> as described in <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span>, when
-changes have been made in the <code>graph_type</code> and
+changes have been made to the <code>graph_type</code> and
 <code>edge_weight</code> options.</p>
 </div>
 <div id="adjusting-segments" class="section level2">
 <h2>Adjusting segments</h2>
-<p>The processing of the ECG signal is made in segments with a default
-length of <span class="math inline">\(2 \sec\)</span> and an overlap of
-<span class="math inline">\(50\%\)</span>, i.e,
-<code>window_seconds=2</code> and <code>window_seconds=0.5</code>.</p>
+<p>The input ECG signal is processed segment-wise using segments with a
+default length of <span class="math inline">\(2 \sec\)</span> and an
+overlap of <span class="math inline">\(50\%\)</span>, i.e.,
+<code>window_seconds=2</code> and <code>window_seconds=0.5</code>. Thus,
+these parameters allow adjustments to the segment-wise computation.</p>
 </div>
 <div id="setting-highpass-cutoff-frequency" class="section level2">
 <h2>Setting highpass cutoff frequency</h2>
 <p>To change the lower cutoff frequency of the highpass filter that
 pre-processes the input ECG signal, the parameter <code>lowcut</code>
-can be adjusted. The default value is <span class="math inline">\(4
+can be modified The default value is <span class="math inline">\(4
 \mathrm{Hz}\)</span>.</p>
 </div>
-</div>
-<div id="outlook" class="section level1">
-<h1>Outlook</h1>
-<p>Adapting the methods for related biomedical signals, such as PPG
-signals, is of great interest and will be the subject to future
-work.</p>
-<p>…</p>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>

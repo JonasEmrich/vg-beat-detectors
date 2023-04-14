@@ -4,14 +4,15 @@
 
 This Python package provides an implementation of visibility graph (VG)
 based approaches for detecting R-peaks in ECG signals. The utilized
-visibility graph transformation maps a signal into a graph
+visibility graph transformation maps a given signal into a graph
 representation by expressing sampling locations as nodes and
-establishing edges between mutually visible samples.
+establishing edges between mutually visible samples. Subsequently, graph
+information is used to determine the R-peak positions.
 
-In \[[1](#References)\], \[[2](#References)\] benchmarking
-on several popular databases showed that the visibility graph based
-methods provide significantly superior performance compared to popular
-R-peak detectors and allow for sample-accurate R-peak detection.
+In \[1\], \[2\] benchmarking on several popular databases showed that
+the visibility graph based methods allow for sample-accurate R-peak
+detection and provide significantly superior performance compared to
+popular R-peak detectors.
 
 # Installation
 
@@ -27,14 +28,17 @@ Additionally, the source code is available on
 # Quick Start
 
 In the following, the basic usage of the ‘FastNVG’ and ‘FastWHVG’
-detectors \[[1](#References)\] is illustrated, which utilize the
-natural visibility graph and a weighted horizontal visibility graph,
+detectors \[1\] is illustrated, which utilize the natural visibility
+graph (NVG) and weighted horizontal visibility graph (WHVG),
 respectively.
 
-The ‘vg-ecg-detetcors’ package provides ‘FastNVG’ and ‘FastWHVG’
-detector classes that are initialized with the *sampling frequency* ‘fs’
-of the given ECG signal. R-peaks can then be determined by calling the
-detectors `find_peaks(ecg)` method and passing the ECG signal.
+The package provides for both detectors an identically named class that
+is initialized with the *sampling frequency* ‘fs’ of the given ECG
+signal. R-peaks can then be determined by calling the detectors
+`find_peaks(ecg)` method and passing the ECG signal.
+
+This is exemplified in the following by means of the pseudo variables
+`fs`and `ecg`:
 
 -   FastNVG
 
@@ -56,8 +60,9 @@ rpeaks = detector.find_peaks(ecg)
 
 ## Complete Working Example
 
-The following example demonstrates the usage of the ‘FastNVG’ detector.
-The use of the ‘FastWHVG’ works analogously.
+The next example demonstrates the application of the ‘FastNVG’ detector
+using real-world ECG data provided by the ‘scipy’ package. The
+utilization of the ‘FastWHVG’ is analogous.
 
 ``` python
 # import the FastNVG detector
@@ -95,12 +100,13 @@ plt.show()
 
 # Advanced Usage
 
-For advanced and experimental usage the package provides a
-‘VisGraphDetector’ base class in which a number of parameters can be
-set. For further explanation and understanding of the listed options and
-their influence consult the papers \[[2](#References)\].
+For advanced and experimental usage the package provides the
+‘VisGraphDetector’ base class in which a number of parameters can be set
+which will be briefly explained in the next paragraphs. For further
+understanding of the listed options and their influence on the
+algorithm, you might want to consult the papers \[2\].
 
-The usage follows the same structure as above:
+The advanced usage follows the same structure as presented above:
 
 ``` python
 from vg_ecg_detectors import VisGraphDetector
@@ -119,7 +125,7 @@ rpeaks = detector.find_peaks(ecg)
 
 ## Visibility graph types
 
-The underlying visibility graph transformation can be set with
+The underlying visibility graph transformation can be selected with
 `graph_type`. The option ‘nvg’ results in the natural visibility graph
 and ‘hvg’ in the horizontal visibility graph.
 
@@ -139,49 +145,39 @@ package](https://cbergillos.com/ts2vg/api/graph_options.html#weighted-graphs)
 
 ## Accelerated and non-accelerated processing
 
-The acceleration technique proposed in \[[1](#References)\]
-which reduces the input signal to only local maxima samples can be
-enabled or disabled by setting `accelerated` to `False` or `True`
-respectively. The acceleration results in a reduced run-time by one
-magnitude while the detection accuracy remains comparable with the
-non-accelerated detector.
+The acceleration technique proposed in \[1\] which reduces the input
+signal to only local maxima samples can be enabled or disabled by
+setting `accelerated` to `True` or `False`, respectively. The
+acceleration results in a reduced run-time by one order of magnitude
+while the detection accuracy remains comparable with the non-accelerated
+detector.
 
 ## Sparsity parameter *β*
 
-As described in \[[2](#References)\] the choice of the sparsity
-parameter *β* ∈ \[0,1\] depends on the used visibility graph
-transformation and edge weights and is a crucial setting for a
-well-functioning detector. Sparsity parameter values for the NVG and
-WHVG were determined by numerical experiments in
-\[[2](#References)\]. We highly recommend redetermining `beta` as
-described in \[[2](#ref-koka_vg_2022)\] [#koka]_, when changes have been made in
-the `graph_type` and `edge_weight` options.
+As described in \[2\] the choice of the sparsity parameter *β* ∈ \[0,1\]
+depends on the used visibility graph transformation and edge weights and
+is a crucial setting for a well-functioning detector. Sparsity parameter
+values for the NVG and WHVG were determined by numerical experiments in
+\[2\]. We highly recommend redetermining `beta` as described in \[2\],
+when changes have been made to the `graph_type` and `edge_weight`
+options.
 
 ## Adjusting segments
 
-The processing of the ECG signal is made in segments with a default
-length of 2sec  and an overlap of 50%, i.e, `window_seconds=2` and
-`window_seconds=0.5`.
+The input ECG signal is processed segment-wise using segments with a
+default length of 2sec  and an overlap of 50%, i.e., `window_seconds=2`
+and `window_seconds=0.5`. Thus, these parameters allow adjustments to
+the segment-wise computation.
 
 ## Setting highpass cutoff frequency
 
 To change the lower cutoff frequency of the highpass filter that
 pre-processes the input ECG signal, the parameter `lowcut` can be
-adjusted. The default value is 4Hz.
-
-# Outlook
-
-Adapting the methods for related biomedical signals, such as PPG
-signals, is of great interest and will be the subject to future work.
-
-…
+modified The default value is 4Hz.
 
 # References
 
 <!-- <div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0px;"></div> -->
-
-.. [#koka] Qi Xuan et al., "*CLPVG: Circular limited penetrable visibility graph as a new network model for time series*", 2021
-
 
 <span class="csl-left-margin">\[1\] </span><span
 class="csl-right-inline"><span class="smallcaps">Emrich</span>, J.,
@@ -191,7 +187,7 @@ class="smallcaps">Muma</span>, M. (2023). [<span
 class="nocase">Accelerated Sample-Accurate R-Peak Detectors Based on
 Visibility Graphs</span>]().</span>
 
-<span id="#ref-koka_vg_2022" class="csl-left-margin">\[2\] </span><span
+<span class="csl-left-margin">\[2\] </span><span
 class="csl-right-inline"><span class="smallcaps">Koka</span>, T. and
 <span class="smallcaps">Muma</span>, M. (2022). [<span
 class="nocase">Fast and Sample Accurate R-Peak Detection for Noisy ECG
