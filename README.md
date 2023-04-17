@@ -36,7 +36,7 @@ signal. R-peaks can then be determined by calling the detectors
 `find_peaks(ecg)` method and passing the ECG signal.
 
 This is exemplified in the following by means of the pseudo variables
-`fs`and `ecg`:
+`fs` and `ecg`:
 
 -   FastNVG
 
