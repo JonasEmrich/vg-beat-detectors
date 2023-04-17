@@ -1,5 +1,0 @@
-py -m build
-py -m twine upload --skip-existing --repository testpypi dist/*
-
-__token__
-pypi-AgENdGVzdC5weXBpLm9yZwIkNzY3YTA4MmUtODdhOC00ZDg0LTliZGUtZTBkZjNjNmE4OTlhAAIqWzMsIjI0OTg2ZjZhLTYzYWYtNDlhZi05MGVjLTJkNzc1M2MxNTI5ZSJdAAAGIKUjrDd1XlamT9FhHhcDDT4Fc8b6oSLwL3SX4cWH77p0
