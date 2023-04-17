@@ -152,11 +152,11 @@ detector.
 
 ### Sparsity parameter $\beta$
 
-As described in \[2\] the choice of the sparsity parameter $\beta \in [0, 1]$
+As described in \[1,2\] the choice of the sparsity parameter $\beta \in [0, 1]$
 depends on the used visibility graph transformation and edge weights and
 is a crucial setting for a well-functioning detector. Sparsity parameter
 values for the NVG and WHVG were determined by numerical experiments in
-\[2\]. We highly recommend redetermining `beta` as described in \[2\],
+\[1,2\]. We highly recommend redetermining `beta` as described in \[1,2\],
 when changes have been made to the `graph_type` and `edge_weight`
 options.
 
@@ -169,9 +169,7 @@ the segment-wise computation.
 
 ### Setting highpass cutoff frequency
 
-To change the lower cutoff frequency of the highpass filter that
-pre-processes the input ECG signal, the parameter `lowcut` can be
-modified The default value is 4Hz.
+The input ECG signal is pre-processed by a highpass filter with a lower cut-off frequency of $4 \mathrm{Hz}$. To modify the cut-off frequency, the parameter `lowcut` can be set.
 
 ## References
 
