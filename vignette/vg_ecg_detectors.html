@@ -1711,7 +1711,7 @@ algorithm, you might want to consult the papers <span class="citation">[<a href=
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                            beta<span class="op">=</span><span class="fl">0.55</span>,</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                            accelerated<span class="op">=</span><span class="va">False</span>,</span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                            window_overlap<span class="op">=</span><span class="fl">0.5</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                            window_seconds<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                            window_length<span class="op">=</span><span class="dv">2</span>,</span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>                            lowcut<span class="op">=</span><span class="fl">4.0</span>)</span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>                            </span>
 <span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>rpeaks <span class="op">=</span> detector.find_peaks(ecg)</span></code></pre></div>
@@ -1758,7 +1758,7 @@ changes have been made to the <code>graph_type</code> and
 <p>The input ECG signal is processed segment-wise using segments with a
 default length of <span class="math inline">\(2 \sec\)</span> and an
 overlap of <span class="math inline">\(50\%\)</span>, i.e.,
-<code>window_seconds=2</code> and <code>window_seconds=0.5</code>. Thus,
+<code>window_length=2</code> and <code>window_overlap=0.5</code>. Thus,
 these parameters allow adjustments to the segment-wise computation.</p>
 </div>
 <div id="setting-highpass-cutoff-frequency" class="section level2">

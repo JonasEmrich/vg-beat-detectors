@@ -92,7 +92,7 @@ The utilization of the 'FastWHVG' is analogous.
 
 ```python
 # import the FastNVG detector
-from vg_ecg_detectors_emrich import FastNVG
+from vg_ecg_detectors import FastNVG
 
 # import packages used in this example
 import numpy as np
@@ -140,7 +140,7 @@ detector = VisGraphDetector(sampling_frequency=250,
                             beta=0.55,
                             accelerated=False,
                             window_overlap=0.5,
-                            window_seconds=2,
+                            window_length=2,
                             lowcut=4.0)
                             
 rpeaks = detector.find_peaks(ecg)
@@ -168,7 +168,7 @@ As described in [@emrich_vg_2023, @koka_vg_2022] the choice of the sparsity para
 
 ## Adjusting segments
 
-The input ECG signal is processed segment-wise using segments with a default length of $2 \sec$ and an overlap of $50\%$, i.e., `window_seconds=2` and `window_seconds=0.5`. Thus, these parameters allow adjustments to the segment-wise computation.
+The input ECG signal is processed segment-wise using segments with a default length of $2 \sec$ and an overlap of $50\%$, i.e., `window_length=2` and `window_overlap=0.5`. Thus, these parameters allow adjustments to the segment-wise computation.
 
 ## Setting highpass cutoff frequency
 
