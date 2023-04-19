@@ -77,7 +77,7 @@ In the following, the basic usage of the 'FastNVG' and 'FastWHVG' detectors [@em
 
 The package provides for both detectors an identically named class that is initialized with the *sampling frequency* 'fs' of the given ECG signal. R-peaks can then be determined by calling the detectors `find_peaks(ecg)` method and passing the ECG signal.
 
-This is exemplified in the following by means of the pseudo variables `fs`and `ecg`:
+This is exemplified in the following by means of the pseudo variables `fs` and `ecg`:
 
 -   FastNVG
 
@@ -175,7 +175,7 @@ As described in @emrich_vg_2023 and @koka_vg_2022 the choice of the sparsity par
 
 ## Adjusting segments
 
-The input ECG signal is processed segment-wise using segments with a default length of $2 \sec$ and an overlap of $50\%$, i.e., `window_length=2` and `window_overlap=0.5`. Thus, these parameters allow adjustments to the segment-wise computation.
+The input ECG signal is processed segment-wise using segments with a default length of $2 \sec$ and an overlap of $50\%$, i.e., `window_length=2` and `window_overlap=0.5`. Therefore, these parameters allow for adjustments to the segment-wise computation.
 
 ## Setting highpass cutoff frequency
 
