@@ -1,9 +1,9 @@
-from vg_ecg_detectors_emrich.vg_detector import VisGraphDetector
+from vg_ecg_detectors.vg_detector import VisGraphDetector
 
 
-class FastNVG(VisGraphDetector):
+class FastWHVG(VisGraphDetector):
     """
-    Implementation of the ``FastNVG`` detector [1] providing fast and sample-accurate R-peak detection in ECG signals.
+    Implementation of the ``FastWHVG`` detector [1] providing fast and sample-accurate R-peak detection in ECG signals.
 
     Parameters
     ----------
@@ -21,7 +21,7 @@ class FastNVG(VisGraphDetector):
     def __init__(self, sampling_frequency=250):
         VisGraphDetector.__init__(self,
                                   sampling_frequency=sampling_frequency,
-                                  graph_type='nvg',
-                                  edge_weight=None,
-                                  beta=0.55,
+                                  graph_type='hvg',
+                                  edge_weight='abs_slope',
+                                  beta=0.85,
                                   accelerated=True)

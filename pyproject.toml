@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vg-ecg-detectors"
-version = "0.0.6"
+version = "0.0.8"
 authors = [
     { name="Jonas Emrich", email="mail@jonasemrich.de" },
     { name="Taulant Koka", email="taulant.koka@tu-darmstadt.de" }
@@ -29,4 +29,3 @@ classifiers = [
 [project.urls]
 "Homepage" = "https://robustdatascience.org/software/"
 "Source Code" = "https://github.com/JonasEmrich/vg-ecg-detectors"
-"Bug Tracker" = "https://github.com/JonasEmrich/vg-ecg-detectors/issues"
