@@ -59,7 +59,7 @@ options(width = 80)
 This Python package provides an implementation of visibility graph (VG) based approaches for detecting R-peaks in ECG signals. The utilized visibility graph transformation maps a given signal into a graph representation by expressing sampling locations as nodes and establishing edges between mutually visible samples.
 Subsequently, graph information is used to determine the R-peak positions.
 
-In @emrich_vg_2023, @koka_vg_2022 benchmarking on several popular databases showed that the visibility graph based methods allow for sample-accurate R-peak detection and provide significantly superior performance compared to popular R-peak detectors.
+In @emrich_vg_2023 and @koka_vg_2022 benchmarking on several popular databases showed that the visibility graph based methods allow for sample-accurate R-peak detection and provide significantly superior performance compared to popular R-peak detectors.
 
 # Installation
 
@@ -134,7 +134,7 @@ plt.show()
 
 # Advanced Usage
 
-For advanced and experimental usage the package provides the 'VisGraphDetector' base class in which a number of parameters can be set which will be briefly explained in the next paragraphs. For further understanding of the listed options and their influence on the algorithm, you might want to consult the papers [@emrich_vg_2023, @koka_vg_2022].
+For advanced and experimental usage the package provides the 'VisGraphDetector' base class in which a number of parameters can be set which will be briefly explained in the next paragraphs. For further understanding of the listed options and their influence on the algorithm, you might want to consult the papers @emrich_vg_2023 and @koka_vg_2022.
 
 The advanced usage follows the same structure as presented above:
 
@@ -171,7 +171,7 @@ The acceleration technique proposed in [@emrich_vg_2023] which reduces the input
 
 ## Sparsity parameter $\beta$
 
-As described in [@emrich_vg_2023, @koka_vg_2022] the choice of the sparsity parameter $\beta \in [0, 1]$ depends on the used visibility graph transformation and edge weights and is a crucial setting for a well-functioning detector. Sparsity parameter values for the NVG and WHVG were determined by numerical experiments in [@emrich_vg_2023, @koka_vg_2022]. We highly recommend redetermining `beta` as described in [@emrich_vg_2023, @koka_vg_2022], when changes have been made to the `graph_type` and `edge_weight` options.
+As described in @emrich_vg_2023 and @koka_vg_2022 the choice of the sparsity parameter $\beta \in [0, 1]$ depends on the used visibility graph transformation and edge weights and is a crucial setting for a well-functioning detector. Sparsity parameter values for the NVG and WHVG were determined by numerical experiments in @emrich_vg_2023 and @koka_vg_2022. We highly recommend redetermining `beta` as described in @emrich_vg_2023 and @koka_vg_2022, when changes have been made to the `graph_type` and `edge_weight` options.
 
 ## Adjusting segments
 

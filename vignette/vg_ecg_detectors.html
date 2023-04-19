@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2023-04-14" />
+<meta name="date" content="2023-04-19" />
 
 <title>Fast and Sample-Accurate R-Peak Detectors Based on Visibility Graphs</title>
 
@@ -1604,7 +1604,7 @@ Based on Visibility Graphs</h1>
 Sebastian Wirth, Michael Muma<br />
 <br />
 Technische Universität Darmstadt</div></h4>
-<h4 class="date">2023-04-14</h4>
+<h4 class="date">2023-04-19</h4>
 
 </div>
 
@@ -1618,7 +1618,7 @@ visibility graph transformation maps a given signal into a graph
 representation by expressing sampling locations as nodes and
 establishing edges between mutually visible samples. Subsequently, graph
 information is used to determine the R-peak positions.</p>
-<p>In <span class="citation">[<a href="#ref-emrich_vg_2023" role="doc-biblioref">1</a>]</span>, <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span> benchmarking
+<p>In <span class="citation">[<a href="#ref-emrich_vg_2023" role="doc-biblioref">1</a>]</span> and <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span> benchmarking
 on several popular databases showed that the visibility graph based
 methods allow for sample-accurate R-peak detection and provide
 significantly superior performance compared to popular R-peak
@@ -1665,7 +1665,7 @@ signal.</p>
 detector using real-world ECG data provided by the ‘scipy’ package. The
 utilization of the ‘FastWHVG’ is analogous.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import the FastNVG detector</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> vg_ecg_detectors_emrich <span class="im">import</span> FastNVG</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> vg_ecg_detectors <span class="im">import</span> FastNVG</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># import packages used in this example</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -1701,7 +1701,7 @@ utilization of the ‘FastWHVG’ is analogous.</p>
 ‘VisGraphDetector’ base class in which a number of parameters can be set
 which will be briefly explained in the next paragraphs. For further
 understanding of the listed options and their influence on the
-algorithm, you might want to consult the papers <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span>.</p>
+algorithm, you might want to consult the papers <span class="citation">[<a href="#ref-emrich_vg_2023" role="doc-biblioref">1</a>]</span> and <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span>.</p>
 <p>The advanced usage follows the same structure as presented above:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> vg_ecg_detectors <span class="im">import</span> VisGraphDetector</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -1744,14 +1744,14 @@ comparable with the non-accelerated detector.</p>
 </div>
 <div id="sparsity-parameter-beta" class="section level2">
 <h2>Sparsity parameter <span class="math inline">\(\beta\)</span></h2>
-<p>As described in <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span> the choice of the sparsity parameter
-<span class="math inline">\(\beta \in [0, 1]\)</span> depends on the
-used visibility graph transformation and edge weights and is a crucial
-setting for a well-functioning detector. Sparsity parameter values for
-the NVG and WHVG were determined by numerical experiments in <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span>. We highly recommend redetermining
-<code>beta</code> as described in <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span>, when
-changes have been made to the <code>graph_type</code> and
-<code>edge_weight</code> options.</p>
+<p>As described in <span class="citation">[<a href="#ref-emrich_vg_2023" role="doc-biblioref">1</a>]</span> and <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span> the choice
+of the sparsity parameter <span class="math inline">\(\beta \in [0,
+1]\)</span> depends on the used visibility graph transformation and edge
+weights and is a crucial setting for a well-functioning detector.
+Sparsity parameter values for the NVG and WHVG were determined by
+numerical experiments in <span class="citation">[<a href="#ref-emrich_vg_2023" role="doc-biblioref">1</a>]</span> and <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span>. We highly recommend redetermining
+<code>beta</code> as described in <span class="citation">[<a href="#ref-emrich_vg_2023" role="doc-biblioref">1</a>]</span> and <span class="citation">[<a href="#ref-koka_vg_2022" role="doc-biblioref">2</a>]</span>, when changes have been made to the
+<code>graph_type</code> and <code>edge_weight</code> options.</p>
 </div>
 <div id="adjusting-segments" class="section level2">
 <h2>Adjusting segments</h2>
