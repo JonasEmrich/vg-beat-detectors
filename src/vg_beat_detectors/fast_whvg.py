@@ -1,4 +1,4 @@
-from vg_ecg_detectors.vg_detector import VisGraphDetector
+from vg_beat_detectors.vg_detector import VisGraphDetector
 
 
 class FastWHVG(VisGraphDetector):

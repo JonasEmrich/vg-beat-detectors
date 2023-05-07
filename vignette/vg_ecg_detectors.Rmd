@@ -82,7 +82,7 @@ This is exemplified in the following by means of the pseudo variables `fs` and `
 -   FastNVG
 
 ```{python, eval=FALSE}
-from vg_ecg_detectors import FastNVG
+from vg_beat_detectors import FastNVG
 
 detector = FastNVG(sampling_frequency=fs)
 rpeaks = detector.find_peaks(ecg)
@@ -91,7 +91,7 @@ rpeaks = detector.find_peaks(ecg)
 -   FastWHVG
 
 ```{python, eval=FALSE}
-from vg_ecg_detectors import FastWHVG
+from vg_beat_detectors import FastWHVG
 
 detector = FastWHVG(sampling_frequency=fs)
 rpeaks = detector.find_peaks(ecg)
@@ -104,7 +104,7 @@ The utilization of the 'FastWHVG' is analogous.
 
 ```{python, eval=TRUE}
 # import the FastNVG detector
-from vg_ecg_detectors import FastNVG
+from vg_beat_detectors import FastNVG
 
 # import packages used in this example
 import numpy as np
@@ -139,7 +139,7 @@ For advanced and experimental usage the package provides the 'VisGraphDetector' 
 The advanced usage follows the same structure as presented above:
 
 ```{python, eval=FALSE}
-from vg_ecg_detectors import VisGraphDetector
+from vg_beat_detectors import VisGraphDetector
 
 detector = VisGraphDetector(sampling_frequency=250,
                             graph_type='nvg',

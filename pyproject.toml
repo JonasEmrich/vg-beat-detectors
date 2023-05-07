@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "vg-ecg-detectors"
+name = "vg-beat-detectors"
 version = "0.0.8"
 authors = [
     { name="Jonas Emrich", email="mail@jonasemrich.de" },
@@ -18,7 +18,7 @@ description = "Fast and sample-accurate R-peak detectors based on visibility gra
 readme = "README.md"
 requires-python = ">=3.7"
 license.file = "LICENSE"
-keywords = ["cardiovascular", "ecg", "R-peak", "R-peak detector", "visibility graphs"]
+keywords = ["cardiovascular", "ecg", "R-peak", "R-peak detector", "visibility graphs", "beat detector", "hrv"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
