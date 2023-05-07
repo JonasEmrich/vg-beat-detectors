@@ -70,13 +70,13 @@ class VisGraphDetector:
                  window_length=2,
                  lowcut=4.0):
 
-        if sampling_frequency < 0:
-            raise ValueError(f"'sampling_frequency' cannot be negative (got {sampling_frequency}).")
+        if sampling_frequency <= 0:
+            raise ValueError(f"'sampling_frequency' has to be a positive non-zero value (got {sampling_frequency}).")
         self.fs = sampling_frequency
 
         self.lowcut = lowcut
 
-        if not 0.0 < beta < 1.0:
+        if not 0.0 <= beta <= 1.0:
             raise ValueError(f"'beta' mus be a value in the interval [0.0;1.0] (got {beta}).")
         self.beta = beta
 
@@ -88,12 +88,12 @@ class VisGraphDetector:
             raise ValueError(f"Invalid 'edge_weight' parameter: {edge_weight}. Must be one of {_edge_weight_options}.")
         self.edge_weight = edge_weight
 
-        if not 0.0 < window_overlap < 1.0:
-            raise ValueError(f"'window_overlap' mus be a value in the interval [0.0;1.0] (got {window_overlap}).")
+        if not 0.0 <= window_overlap < 1.0:
+            raise ValueError(f"'window_overlap' mus be a value in the interval [0.0;1.0) (got {window_overlap}).")
         self.window_overlap = window_overlap
 
-        if window_length < 0:
-            raise ValueError(f"'window_seconds' cannot be negative (got {window_length}).")
+        if window_length <= 0:
+            raise ValueError(f"'window_seconds' has to be a positive non-zero value (got {window_length}).")
         self.window_seconds = window_length
 
         self.accelerated = accelerated
@@ -113,6 +113,10 @@ class VisGraphDetector:
             Array containing the sample locations (indices) of the determined R-peaks.
 
         """
+
+        if sig is None:
+            raise ValueError(f"The input signal 'sig' is None.")
+
         # initialize some variables
         N = len(sig)  # total signal length
         M = int(self.window_seconds * self.fs)  # length of window segment
@@ -121,6 +125,9 @@ class VisGraphDetector:
         dM = int(np.ceil(self.window_overlap * M))  # Size of segment overlap
         L = int(np.ceil(((N - r) / (M - dM) + 1)))  # Number of segments
         weights = np.zeros(N)  # Empty array to store the weights
+
+        if N < M:
+            raise ValueError(f"The length of the input signal 'sig' must be greater than the window lengths, which is {M} samples.")
 
         # filter the signal with a highpass butterworth filter
         sig = self._filter_highpass(sig)
