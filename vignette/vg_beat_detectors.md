@@ -92,7 +92,7 @@ The utilization of the 'FastWHVG' is analogous.
 
 ```python
 # import the FastNVG detector
-from vg_beat_detectors import FastNVG
+from vg_ecg_detectors import FastNVG
 
 # import packages used in this example
 import numpy as np
