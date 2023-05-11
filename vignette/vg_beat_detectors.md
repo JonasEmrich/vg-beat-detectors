@@ -4,7 +4,7 @@ author: |
   | Jonas Emrich, Taulant Koka, Sebastian Wirth, Michael Muma
   |
   | Technische Universität Darmstadt
-date: "2023-04-19"
+date: "2023-05-11"
 output:
   html_document:
     theme: flatly
@@ -48,19 +48,19 @@ In @emrich_vg_2023 and @koka_vg_2022 benchmarking on several popular databases s
 
 # Installation
 
-You can install the latest version of the 'vg-ecg-detectors' package from the [Python Package Index (PyPI)](https://pypi.org/project/vg-ecg-detectors/) by running:
+You can install the latest version of the 'vg-beat-detectors' package from the [Python Package Index (PyPI)](https://pypi.org/project/vg-beat-detectors/) by running:
 
 ```         
-pip install vg-ecg-detectors
+pip install vg-beat-detectors
 ```
 
-Additionally, the source code is available on [GitHub](https://github.com/JonasEmrich/vg-ecg-detectors).
+Additionally, the source code is available on [GitHub](https://github.com/JonasEmrich/vg-beat-detectors).
 
 # Quick Start
 
-In the following, the basic usage of the 'FastNVG' and 'FastWHVG' detectors [@emrich_vg_2023] is illustrated, which utilize the natural visibility graph (NVG) and weighted horizontal visibility graph (WHVG), respectively.
+This section illustrates, the basic usage of the 'FastNVG' and 'FastWHVG' detectors [@emrich_vg_2023], which utilize the natural visibility graph (NVG) and weighted horizontal visibility graph (WHVG), respectively.
 
-The package provides for both detectors an identically named class that is initialized with the *sampling frequency* 'fs' of the given ECG signal. R-peaks can then be determined by calling the detectors `find_peaks(ecg)` method and passing the ECG signal.
+For both the 'FastNVG' and the 'FastWHVG' detectors, this package provides an identically named class that is initialized with the *sampling frequency* 'fs' of the given ECG signal. R-peaks can then be determined by applying the detectors `find_peaks(ecg)` method on the ECG signal.
 
 This is exemplified in the following by means of the pseudo variables `fs` and `ecg`:
 
@@ -68,7 +68,7 @@ This is exemplified in the following by means of the pseudo variables `fs` and `
 
 
 ```python
-from vg_ecg_detectors import FastNVG
+from vg_beat_detectors import FastNVG
 
 detector = FastNVG(sampling_frequency=fs)
 rpeaks = detector.find_peaks(ecg)
@@ -78,7 +78,7 @@ rpeaks = detector.find_peaks(ecg)
 
 
 ```python
-from vg_ecg_detectors import FastWHVG
+from vg_beat_detectors import FastWHVG
 
 detector = FastWHVG(sampling_frequency=fs)
 rpeaks = detector.find_peaks(ecg)
@@ -92,7 +92,7 @@ The utilization of the 'FastWHVG' is analogous.
 
 ```python
 # import the FastNVG detector
-from vg_ecg_detectors import FastNVG
+from vg_beat_detectors import FastNVG
 
 # import packages used in this example
 import numpy as np
@@ -120,19 +120,19 @@ plt.ylim(-1, 1.5)
 plt.show()
 ```
 
-<img src="vg_ecg_detectors_files/figure-html/unnamed-chunk-4-1.png" width="85%" style="display: block; margin: auto;" />
+<img src="vg_beat_detectors_files/figure-html/unnamed-chunk-4-1.png" width="85%" style="display: block; margin: auto;" />
 
 ------------------------------------------------------------------------
 
 # Advanced Usage
 
-For advanced and experimental usage the package provides the 'VisGraphDetector' base class in which a number of parameters can be set which will be briefly explained in the next paragraphs. For further understanding of the listed options and their influence on the algorithm, you might want to consult the papers @emrich_vg_2023 and @koka_vg_2022.
+For advanced and experimental usage, the package provides the 'VisGraphDetector' base class, in which a number of parameters can be set, which will be briefly explained in the next paragraphs. For further understanding of the listed options and their influence on the algorithm, the interested user is referred to the papers @emrich_vg_2023 and @koka_vg_2022.
 
 The advanced usage follows the same structure as presented above:
 
 
 ```python
-from vg_ecg_detectors import VisGraphDetector
+from vg_beat_detectors import VisGraphDetector
 
 detector = VisGraphDetector(sampling_frequency=250,
                             graph_type='nvg',
@@ -156,19 +156,19 @@ The edges in the visibility graph representation can be constructed with a weigh
 
 Available weights are 'distance', 'sq_distance', 'v_distance', 'abs_v\_distance', 'h_distance', 'abs_h\_distance', 'slope', 'abs_slope', 'angle' and 'abs_angle' as well as None for no weighting.
 
-For further explanation of each available weight see the [documentation of the 'ts2vg' package](https://cbergillos.com/ts2vg/api/graph_options.html#weighted-graphs)
+For further explanation of each available weight, see the [documentation of the 'ts2vg' package](https://cbergillos.com/ts2vg/api/graph_options.html#weighted-graphs).
 
 ## Accelerated and non-accelerated processing
 
-The acceleration technique proposed in [@emrich_vg_2023] which reduces the input signal to only local maxima samples can be enabled or disabled by setting `accelerated` to `True` or `False`, respectively. The acceleration results in a reduced run-time by one order of magnitude while the detection accuracy remains comparable with the non-accelerated detector.
+The acceleration technique proposed in [@emrich_vg_2023] which reduces the input signal to only local maxima samples can be enabled or disabled by setting `accelerated` to `True` or `False`, respectively. The acceleration results in a run-time reduction by one order of magnitude while the detection accuracy remains comparable to that of the non-accelerated detector.
 
 ## Sparsity parameter $\beta$
 
-As described in @emrich_vg_2023 and @koka_vg_2022 the choice of the sparsity parameter $\beta \in [0, 1]$ depends on the used visibility graph transformation and edge weights and is a crucial setting for a well-functioning detector. Sparsity parameter values for the NVG and WHVG were determined by numerical experiments in @emrich_vg_2023 and @koka_vg_2022. We highly recommend redetermining `beta` as described in @emrich_vg_2023 and @koka_vg_2022, when changes have been made to the `graph_type` and `edge_weight` options.
+As described in @emrich_vg_2023 and @koka_vg_2022, the choice of the sparsity parameter $\beta \in [0, 1]$ depends on the used visibility graph transformation and edge weights. The parameter $\beta$ should be set appropriately to achieve a high detection performance. Sparsity parameter values for the NVG and WHVG were determined in numerical experiments in @emrich_vg_2023 and @koka_vg_2022. We highly recommend redetermining `beta` as described in @emrich_vg_2023 and @koka_vg_2022, when changes have been made to the `graph_type` and `edge_weight` options.
 
 ## Adjusting segments
 
-The input ECG signal is processed segment-wise using segments with a default length of $2 \sec$ and an overlap of $50\%$, i.e., `window_length=2` and `window_overlap=0.5`. Therefore, these parameters allow for adjustments to the segment-wise computation.
+The input ECG signal is processed segment-wise using segments with a default length of $2 \sec$ and an overlap of $50\%$, i.e., `window_length=2` and `window_overlap=0.5`. As their name suggests, these parameters allow for adjustments of the window length and overlap.
 
 ## Setting highpass cutoff frequency
 
