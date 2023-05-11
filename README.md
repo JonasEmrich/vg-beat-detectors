@@ -92,7 +92,7 @@ plt.ylim(-1, 1.5)
 plt.show()
 ```
 
-<img src="vg_beat_detectors_files/figure-markdown_github/unnamed-chunk-4-1.png" width="85%" style="display: block; margin: auto;" />
+<img src="vg_beat_detectors_files/figure-html/unnamed-chunk-4-1.png" width="85%" style="display: block; margin: auto;" />
 
 ------------------------------------------------------------------------
 
