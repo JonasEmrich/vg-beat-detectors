@@ -102,7 +102,7 @@ rpeaks = detector.find_peaks(ecg)
 The next example demonstrates the application of the 'FastNVG' detector using real-world ECG data provided by the 'scipy' package.
 The utilization of the 'FastWHVG' is analogous.
 
-```{python, eval=TRUE}
+```{python eval=TRUE, engine.path="C:/Users/Jonas/AppData/Local/Programs/Python/Python310/python.exe"}
 # import the FastNVG detector
 from vg_ecg_detectors import FastNVG
 
