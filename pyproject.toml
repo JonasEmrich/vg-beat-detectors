@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vg-beat-detectors"
-version = "0.0.8"
+version = "0.0.9"
 authors = [
     { name="Jonas Emrich", email="mail@jonasemrich.de" },
     { name="Taulant Koka", email="taulant.koka@tu-darmstadt.de" }
@@ -33,4 +33,5 @@ classifiers = [
 [project.optional-dependencies]
 tests = [
     "pytest",
+    "scipy>=1.10"
 ]
