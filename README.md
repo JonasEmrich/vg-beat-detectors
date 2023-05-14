@@ -69,7 +69,7 @@ from vg_beat_detectors import FastNVG
 # import packages used in this example
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.misc import electrocardiogram
+from scipy.datasets import electrocardiogram
 
 # generate some ECG signal
 fs = 360
