@@ -28,7 +28,7 @@ classifiers = [
 
 [project.urls]
 "Homepage" = "https://robustdatascience.org/software/"
-"Source Code" = "https://github.com/JonasEmrich/vg-ecg-detectors"
+"Source Code" = "https://github.com/JonasEmrich/vg-beat-detectors"
 
 [project.optional-dependencies]
 tests = [
