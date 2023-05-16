@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vg-beat-detectors"
-version = "0.0.9"
+version = "0.0.11"
 authors = [
     { name="Jonas Emrich", email="mail@jonasemrich.de" },
     { name="Taulant Koka", email="taulant.koka@tu-darmstadt.de" }
@@ -16,7 +16,7 @@ maintainers = [
 dependencies = ["numpy", "scipy", "ts2vg"]
 description = "Fast and sample-accurate R-peak detectors based on visibility graphs."
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 license.file = "LICENSE"
 keywords = ["cardiovascular", "ecg", "R-peak", "R-peak detector", "visibility graphs", "beat detector", "hrv"]
 classifiers = [
@@ -33,5 +33,6 @@ classifiers = [
 [project.optional-dependencies]
 tests = [
     "pytest",
-    "scipy>=1.10"
+    "scipy>=1.10.1",
+    "pooch"
 ]
