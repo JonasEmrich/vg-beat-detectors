@@ -1,6 +1,7 @@
 from scipy import signal
 from ts2vg import HorizontalVG, NaturalVG
 import numpy as np
+import networkx as nx
 
 _graph_options = ['nvg', 'hvg', 'NVG', 'HVG']
 _edge_weight_options = [None,
@@ -14,7 +15,6 @@ _edge_weight_options = [None,
                         'abs_v_distance',
                         'h_distance',
                         'abs_h_distance']
-
 
 class VisGraphDetector:
     """
@@ -127,7 +127,8 @@ class VisGraphDetector:
         weights = np.zeros(N)  # Empty array to store the weights
 
         if N < M:
-            raise ValueError(f"The length of the input signal 'sig' must be greater than the window lengths, which is {M} samples.")
+            raise ValueError(
+                f"The length of the input signal 'sig' must be greater than the window lengths, which is {M} samples.")
 
         # filter the signal with a highpass butterworth filter
         sig = self._filter_highpass(sig)
@@ -136,8 +137,17 @@ class VisGraphDetector:
         for jj in range(L):
             s = sig[l:r]
 
-            # compute weight vector using KHop paths and visibility graphs
-            w, indices = self._calculate_weights(s)
+            # reducing data to process if accelerated variant is selected
+            if self.accelerated:
+                indices, xs = self._reduce(s)
+            else:
+                indices, xs = np.arange(r-l), s
+
+            # compute vg graph
+            vg = self._ts2vg(xs, indices)
+
+            # compute weight vector using iterative kHop paths algorithm
+            w = self._khop_paths(vg)
 
             # update weight vector
             if l == 0:
@@ -163,23 +173,92 @@ class VisGraphDetector:
         R_peaks = self._pantompkins_threshold(weighted_sig)
         return R_peaks
 
+
+    def calc_graphmetrics(self, sig, metrics="all"):
+        def _dict2array(dict):
+            """converts dictionary into list ordered by indicies"""
+            max_key = max(dict.keys())
+            return np.array([dict.get(i, 0) for i in range(max_key + 1)])
+
+        if sig is None:
+            raise ValueError(f"The input signal 'sig' is None.")
+
+        # initialize some variables
+        N = len(sig)  # total signal length
+        M = int(self.window_seconds * self.fs)  # length of window segment
+        l = 0  # Left segment boundary
+        r = M  # Right segment boundary
+        dM = int(np.ceil(self.window_overlap * M))  # Size of segment overlap
+        L = int(np.ceil(((N - r) / (M - dM) + 1)))  # Number of segments
+        output = {}
+
+        if N < M:
+            raise ValueError(
+                f"The length of the input signal 'sig' must be greater than the window lengths, which is {M} samples.")
+
+        # filter the signal with a highpass butterworth filter
+        sig = self._filter_highpass(sig)
+
+        # do computation in small segments
+        for jj in range(L):
+            s = sig[l:r]
+
+            # reducing data to process if accelerated variant is selected
+            if self.accelerated:
+                indices, xs = self._reduce(s)
+            else:
+                indices, xs = np.arange(r-l), s
+
+            # compute vg graph
+            vg = self._ts2vg(s)
+            G = vg.as_networkx()
+
+            metrics_list = {'degree': (lambda x: nx.degree_centrality(x)),
+                            'in_degree': (lambda x: nx.in_degree_centrality(x)),
+                            'out_degree': (lambda x: nx.out_degree_centrality(x)),
+                            #'eigenvector': (lambda x: nx.eigenvector_centrality(G, max_iter=600)), # does not converge everytime
+                            'katz': (lambda x: nx.katz_centrality(x)),
+                            'closeness': (lambda x: nx.closeness_centrality(x)),
+                            'betweenness': (lambda x: nx.betweenness_centrality(x)),
+                            'load': (lambda x: nx.load_centrality(x)),
+                            'harmonic': (lambda x: nx.harmonic_centrality(x)),
+                            'trophic_levels': (lambda x: nx.trophic_levels(x)),
+                            'pagerank': (lambda x: nx.pagerank(x)),
+                            #'laplacian': (lambda x: nx.laplacian_centrality(x, normalized=False)) # needs a lot of time
+                            }
+
+            for name, function in metrics_list.items():
+                if metrics != "all" and name not in metrics:
+                    continue
+                metric = _dict2array(function(G))
+
+                # # # Update weight vector # # #
+                if l == 0:
+                    output[name] = np.pad(metric, (0, N - M), 'constant')
+                elif N - dM + 1 <= l and l + 1 <= N:
+                    output[name][l:] = 0.5 * (metric + output[name][l:])
+                else:
+                    output[name][l:l + dM] = 0.5 * (metric[:dM] + output[name][l:l + dM])
+                    output[name][l + dM:r] = metric[dM:]
+
+            # # # break loop, if end of signal is reached # # #
+            if r - l < M:
+                break
+            # # # Update segment boundaries # # #
+            l += M - dM
+            if r + (M - dM) <= N:
+                r += M - dM
+            else:
+                r = N
+
+        return output
+
     def _filter_highpass(self, sig, order=2):
         """implements a butterworth highpass filter"""
         nyq = 0.5 * self.fs
         high = self.lowcut / nyq
         b, a = signal.butter(order, high, btype='highpass')
         return signal.filtfilt(b, a, sig)
-
-    def _calculate_weights(self, sig):
-        """calculates k-Hop weights from adjacency matrix"""
-        if self.accelerated:
-            ts, xs = self._reduce(sig)
-        else:
-            ts, xs = np.arange(len(sig)), sig
-
-        adjacency = self._ts2adjacency(ts, xs)
-        w = self._khop_paths(adjacency, self.beta)
-        return w, ts
 
     def _reduce(self, sig):
         """reduces signal by only considering sufficiently large local peaks"""
@@ -189,27 +268,33 @@ class VisGraphDetector:
         greater = np.argwhere(values > threshold).flatten()
         return indices[greater], values[greater]
 
-    def _ts2adjacency(self, ts, xs):
+    def _ts2vg(self, xs, ts=None):
         """translates time series (ts, xs) into visibility graph representation and returns adjacency matrix"""
-        size = len(xs)
+
         # calculate the visibility graph
         if self.graph_type in ['nvg', 'NVG']:
             vg = NaturalVG(directed='top_to_bottom', weighted=self.edge_weight)
         else:
             vg = HorizontalVG(directed='top_to_bottom', weighted=self.edge_weight)
         vg.build(xs, ts)
-
-        # convert list of edges into adjacency matrix
+        return vg
+    
+    def _vg2adjacency(self, vg):
+        """creates adjacency matrix from VG graph object"""
+        edges = vg.edges
+        size = vg.n_vertices
         adjacency = np.zeros((size, size))
-        for edge in vg.edges:
-            adjacency[edge[0]][edge[1]] = 1 if self.edge_weight is None else edge[2]
+        for edge in edges:
+            adjacency[edge[0]][edge[1]] = 1 if self.edge_weight is None else edge[2]    
         return adjacency
 
-    def _khop_paths(self, adjacency, beta):
+    def _khop_paths(self, vg):
         """calculates weights through iterative k-Hop paths metric"""
+        adjacency = self._vg2adjacency(vg)
         size = len(adjacency)
+
         w = np.ones(size) / size
-        while np.count_nonzero(w) > beta * size:
+        while np.count_nonzero(w) > self.beta * size:
             Av = adjacency @ w
             w_new = abs(Av / np.linalg.norm(Av))
             if np.any(np.isnan(w_new)):
