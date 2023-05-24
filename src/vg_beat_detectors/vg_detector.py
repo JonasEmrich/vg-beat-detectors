@@ -175,13 +175,46 @@ class VisGraphDetector:
 
 
     def calc_graphmetrics(self, sig, metrics="all"):
+        """ Calcuate several node metrics for the given signal.
+
+        Parameters
+        ----------
+        sig: np.array
+            The ECG signal which will be processed.
+        metrics: 
+            defaults to `"all"` which results in the calculation of all available metrics, while passing a list of the preferred metrics 
+            result in the calculation of those (e.g. `['in_degree','harmonic']`)
+
+        Returns
+        -------
+        R_peaks : dict
+            Dictionary of the computed metrics. The key corresponds to the name of the metric, while the value is an array containing the computed metric value for each node.
+
+        """
         def _dict2array(dict):
             """converts dictionary into list ordered by indicies"""
             max_key = max(dict.keys())
             return np.array([dict.get(i, 0) for i in range(max_key + 1)])
 
+        metrics_list = {'degree': (lambda x: nx.degree_centrality(x)),
+                        'in_degree': (lambda x: nx.in_degree_centrality(x)),
+                        'out_degree': (lambda x: nx.out_degree_centrality(x)),
+                        #'eigenvector': (lambda x: nx.eigenvector_centrality(G, max_iter=600)), # does not converge everytime
+                        'katz': (lambda x: nx.katz_centrality(x)),
+                        'closeness': (lambda x: nx.closeness_centrality(x)),
+                        'betweenness': (lambda x: nx.betweenness_centrality(x)),
+                        'load': (lambda x: nx.load_centrality(x)),
+                        'harmonic': (lambda x: nx.harmonic_centrality(x)),
+                        'trophic_levels': (lambda x: nx.trophic_levels(x)),
+                        'pagerank': (lambda x: nx.pagerank(x)),
+                        #'laplacian': (lambda x: nx.laplacian_centrality(x, normalized=False)) # needs a lot of time
+                        }
+
         if sig is None:
             raise ValueError(f"The input signal 'sig' is None.")
+
+        if metrics != "all" and not set(metrics).issubset(set(metrics_list.keys())):
+            raise ValueError(f"At least one of the provided metrics is not known.")
 
         # initialize some variables
         N = len(sig)  # total signal length
@@ -212,20 +245,6 @@ class VisGraphDetector:
             # compute vg graph
             vg = self._ts2vg(s)
             G = vg.as_networkx()
-
-            metrics_list = {'degree': (lambda x: nx.degree_centrality(x)),
-                            'in_degree': (lambda x: nx.in_degree_centrality(x)),
-                            'out_degree': (lambda x: nx.out_degree_centrality(x)),
-                            #'eigenvector': (lambda x: nx.eigenvector_centrality(G, max_iter=600)), # does not converge everytime
-                            'katz': (lambda x: nx.katz_centrality(x)),
-                            'closeness': (lambda x: nx.closeness_centrality(x)),
-                            'betweenness': (lambda x: nx.betweenness_centrality(x)),
-                            'load': (lambda x: nx.load_centrality(x)),
-                            'harmonic': (lambda x: nx.harmonic_centrality(x)),
-                            'trophic_levels': (lambda x: nx.trophic_levels(x)),
-                            'pagerank': (lambda x: nx.pagerank(x)),
-                            #'laplacian': (lambda x: nx.laplacian_centrality(x, normalized=False)) # needs a lot of time
-                            }
 
             for name, function in metrics_list.items():
                 if metrics != "all" and name not in metrics:
