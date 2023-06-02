@@ -28,10 +28,10 @@ def test_overlap_1():
         vg_beat_detectors.VisGraphDetector(window_overlap=1.0).find_peaks(triag)
 
 def test_small_input():
-    '''Tests peak detection with too small input.'''
-    with pytest.raises(ValueError):
-        x = np.ones(10)
-        vg_beat_detectors.VisGraphDetector().find_peaks(x)
+    '''Tests peak detection with input smaller than window size. Should produce same output as if the windowsize equals the signal length.'''
+    a = vg_beat_detectors.VisGraphDetector(window_length=10, sampling_frequency=250).find_peaks(triag)
+    b = vg_beat_detectors.VisGraphDetector(window_length=4, sampling_frequency=250).find_peaks(triag) # signal length is 1000, meaning 4sec by fs=250Hz
+    assert a == b
 
 def test_None_input():
     '''Tests peak detection with None input.'''
@@ -128,5 +128,7 @@ def test_regression():
                          101208, 101441, 101657, 101905, 102111, 102322, 102531, 102732, 102922, 103113, 103323, 103530,
                          103726, 103949, 104166, 104361, 104643, 104863, 105303, 105741, 105950, 106152, 106355, 106566,
                          106782, 107219, 107423, 107607, 107871])
-    assert tol_f1(detected, expected, 10) > 0.95
+    F1 = tol_f1(detected, expected, 10)
+    print(F1)
+    assert F1 > 0.95
 
