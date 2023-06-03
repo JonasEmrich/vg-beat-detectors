@@ -28,10 +28,10 @@ def test_overlap_1():
         vg_beat_detectors.VisGraphDetector(window_overlap=1.0).find_peaks(triag)
 
 def test_small_input():
-    '''Tests peak detection with too small input.'''
-    with pytest.raises(ValueError):
-        x = np.ones(10)
-        vg_beat_detectors.VisGraphDetector().find_peaks(x)
+    '''Tests peak detection with input smaller than window size. Should produce same output as if the windowsize equals the signal length.'''
+    a = vg_beat_detectors.VisGraphDetector(window_length=10, sampling_frequency=250).find_peaks(triag)
+    b = vg_beat_detectors.VisGraphDetector(window_length=4, sampling_frequency=250).find_peaks(triag) # signal length is 1000, meaning 4sec by fs=250Hz
+    assert a == b
 
 def test_None_input():
     '''Tests peak detection with None input.'''
