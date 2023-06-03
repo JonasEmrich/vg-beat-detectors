@@ -4,7 +4,9 @@ import numpy as np
 import networkx as nx
 
 _directions = [None, 'top_to_bottom', 'left_to_right']
+
 _graph_options = ['nvg', 'hvg', 'NVG', 'HVG']
+
 _edge_weight_options = [None,
                         'slope',
                         'abs_slope',
@@ -17,73 +19,53 @@ _edge_weight_options = [None,
                         'h_distance',
                         'abs_h_distance']
 
-_metrics_list_directed = {'node_connectivity': (lambda x: nx.node_connectivity(x)),
-                'average_node_connectivity': (lambda x: nx.average_node_connectivity(x)),
-                'average_clustering': (lambda x: nx.average_clustering(x)),
-                'edge_connectivity': (lambda x: nx.edge_connectivity(x)),
-                'degree_assortativity_coefficient': (lambda x: nx.degree_assortativity_coefficient(x)),
-                'degree_pearson_correlation_coefficient': (lambda x: nx.degree_pearson_correlation_coefficient(x)),
-                'trophic_incoherence_parameter': (lambda x: nx.trophic_incoherence_parameter(x)),
-                'global_reaching_centrality': (lambda x: nx.global_reaching_centrality(x)),
-                'number_strongly_connected_components': (lambda x: nx.number_strongly_connected_components(x)),
-                'number_weakly_connected_components': (lambda x: nx.number_weakly_connected_components(x)),
-                'number_attracting_components': (lambda x: nx.number_attracting_components(x)),
-                'dag_longest_path_length': (lambda x: nx.dag_longest_path_length(x)),
-                'average_shortest_path_length': (lambda x: nx.average_shortest_path_length(x)),
-                'flow_hierarchy': (lambda x: nx.flow_hierarchy(x)),
-                'number_of_isolates': (lambda x: nx.number_of_isolates(x)),
-                'wiener_index': (lambda x: nx.wiener_index(x)),
-                'density': (lambda x: nx.density(x)),
+# dictionary of available graph metrics in the following format Dict{Key(name): Value(Tupel(Funtor_of_metric, List(directed_or_undirected)))}
+_metrics_list = {'node_connectivity':                       ((lambda x: nx.node_connectivity(x)),                       ['directed', 'undirected']),
+                'average_node_connectivity':                ((lambda x: nx.average_node_connectivity(x)),               ['directed', 'undirected']),
+                'average_clustering':                       ((lambda x: nx.average_clustering(x)),                      ['directed', 'undirected']),
+                'edge_connectivity':                        ((lambda x: nx.edge_connectivity(x)),                       ['directed', 'undirected']),
+                'degree_assortativity_coefficient':         ((lambda x: nx.degree_assortativity_coefficient(x)),        ['directed', 'undirected']),
+                'degree_pearson_correlation_coefficient':   ((lambda x: nx.degree_pearson_correlation_coefficient(x)),  ['directed', 'undirected']),
+                'trophic_incoherence_parameter':            ((lambda x: nx.trophic_incoherence_parameter(x)),           ['directed']),
+                'global_reaching_centrality':               ((lambda x: nx.global_reaching_centrality(x)),              ['directed', 'undirected']),
+                'number_strongly_connected_components':     ((lambda x: nx.number_strongly_connected_components(x)),    ['directed']),
+                'number_weakly_connected_components':       ((lambda x: nx.number_weakly_connected_components(x)),      ['directed']),
+                'number_attracting_components':             ((lambda x: nx.number_attracting_components(x)),            ['directed']),
+                'dag_longest_path_length':                  ((lambda x: nx.dag_longest_path_length(x)),                 ['directed']),
+                'average_shortest_path_length':             ((lambda x: nx.average_shortest_path_length(x)),            ['directed', 'undirected']),
+                'flow_hierarchy':                           ((lambda x: nx.flow_hierarchy(x)),                          ['directed']),
+                'number_of_isolates':                       ((lambda x: nx.number_of_isolates(x)),                      ['directed', 'undirected']),
+                'wiener_index':                             ((lambda x: nx.wiener_index(x)),                            ['directed', 'undirected']),
+                'density':                                  ((lambda x: nx.density(x)),                                 ['directed', 'undirected']),
+                'diameter':                                 ((lambda x: nx.diameter(x)),                                ['undirected']),
+                'radius':                                   ((lambda x: nx.radius(x)),                                  ['undirected']),
+                'estrada_index':                            ((lambda x: nx.estrada_index(x)),                           ['undirected']),
+                'graph_clique_number':                      ((lambda x: max(len(c) for c in nx.find_cliques(x))),       ['undirected']),
+                'graph_number_of_cliques':                  ((lambda x: sum(1 for _ in nx.find_cliques(x))),            ['undirected']),
+                'number_connected_components':              ((lambda x: nx.number_connected_components(x)),             ['undirected']),
+                'stoer_wagner':                             ((lambda x: nx.stoer_wagner(x)[0]),                         ['undirected']),
+                'local_efficiency':                         ((lambda x: nx.local_efficiency(x)),                        ['undirected']),
+                'global_efficiency':                        ((lambda x: nx.global_efficiency(x)),                       ['undirected']),
+                'non_randomness':                           ((lambda x: nx.non_randomness(x)[0]),                       ['undirected']),
+                'small_world_sigma':                        ((lambda x: nx.sigma(x)),                                   ['undirected']),
+                'small_world_omega':                        ((lambda x: nx.omega(x)),                                   ['undirected']),
 }
 
-_metrics_list_undirected = {'diameter': (lambda x: nx.diameter(x)),
-                            'radius': (lambda x: nx.radius(x)),
-                            'estrada_index': (lambda x: nx.estrada_index(x)),
-                            'graph_clique_number': (lambda x: max(len(c) for c in nx.find_cliques(x))),
-                            'graph_number_of_cliques': (lambda x: sum(1 for _ in nx.find_cliques(x))),
-                            'number_connected_components': (lambda x: nx.number_connected_components(x)),
-                            'stoer_wagner': (lambda x: nx.stoer_wagner(x)[0]),
-                            'local_efficiency': (lambda x: nx.local_efficiency(x)),
-                            'global_efficiency': (lambda x: nx.global_efficiency(x)),
-                            'non_randomness': (lambda x: nx.non_randomness(x)[0]),
-                            'small_world_sigma': (lambda x: nx.sigma(x)),
-                            'small_world_omega': (lambda x: nx.omega(x)),
-}
-_metrics_list = [_metrics_list_undirected, _metrics_list_directed]
-
-_centrality_metrics_list = {'degree': (lambda x: nx.degree_centrality(x)),
-                        'in_degree': (lambda x: nx.in_degree_centrality(x)),
-                        'out_degree': (lambda x: nx.out_degree_centrality(x)),
-                        #'eigenvector': (lambda x: nx.eigenvector_centrality(G, max_iter=600)), # does not converge everytime
-                        'katz': (lambda x: nx.katz_centrality(x)),
-                        'closeness': (lambda x: nx.closeness_centrality(x)),
-                        'betweenness': (lambda x: nx.betweenness_centrality(x)),
-                        'load': (lambda x: nx.load_centrality(x)),
-                        'harmonic': (lambda x: nx.harmonic_centrality(x)),
-                        'trophic_levels': (lambda x: nx.trophic_levels(x)),
-                        'pagerank': (lambda x: nx.pagerank(x)),
-                        #'laplacian': (lambda x: nx.laplacian_centrality(x, normalized=False)) # needs a lot of time
-                        }
 
 class VisGraphMetric:
     """
-    Base algorithm for detecting R-peaks in ECG signals using visibility graphs [1,2].
-    This class is intended for advanced and experimental usage while the classes of the proposed detectors``FastNVG``
-    and ``FastWHVG`` are implemented for a ready-to-use experience.
-
-    Please consult the papers [1,2] for a further detailed explanation and understanding of the options and parameters
-    available in this class.
+    This class provides several graph metrics computed on the visibility graph of a given input sequence (signal).
 
     Parameters
     ----------
     sampling_frequency : int
-        The sampling frequency of the ECG signal in which R-peaks will be detected (in Hz, samples/second).
+        The sampling frequency of the signal (in Hz, samples/second).
         Defaults to 250
     graph_type : str
         Specifies the visibility graph transformation used for computation. Has to be one of ["nvg", "hvg"].
         Defaults to ``"nvg"``
     direction : str
-        Defines according to which direction edges are established. If 'None' an undirected graoph is used. 
+        Defines according to which direction edges are established. If 'None' an undirected graph is used. 
         Otherwise ["left_to_right", "top_to_bottom"] produce directed graphs.
         Defaults to ``"top_to_bottom"``
     edge_weight : str
@@ -92,7 +74,7 @@ class VisGraphMetric:
         'abs_v_distance', 'h_distance', 'abs_h_distance']. For further details consult the ts2vg package.
         Defaults to ``None``
     window_length : float
-        Length of on data segment (in seconds!) used in the segment-wise processing of the ECG signal. Defaults to 2
+        Length of on data segment (in seconds!) used in the segment-wise processing of the signal. Defaults to 2
     window_overlap : float
         Overlap percentage (between 0 and 1) of the data segments used in the segment-wise computation. Defaults to 0.5
     lowcut : float
@@ -124,11 +106,6 @@ class VisGraphMetric:
             raise ValueError(f"Invalid 'direction' parameter: {direction}. Must be one of {_directions}.")
         self.directed = direction
 
-        if direction is None:
-            self._metrics_list =  _metrics_list[0]
-        else:
-            self._metrics_list = _metrics_list[1]
-
         if edge_weight not in _edge_weight_options:
             raise ValueError(f"Invalid 'edge_weight' parameter: {edge_weight}. Must be one of {_edge_weight_options}.")
         self.edge_weight = edge_weight
@@ -141,86 +118,12 @@ class VisGraphMetric:
             raise ValueError(f"'window_seconds' has to be a positive non-zero value (got {window_length}).")
         self.window_seconds = window_length
 
+        self._metrics_list = _metrics_list
 
-    def calc_centrality(self, sig, metrics="all"):
-        """ Calcuate several node metrics for the given signal.
-
-        Parameters
-        ----------
-        sig: np.array
-            The ECG signal which will be processed.
-        metrics: 
-            defaults to `"all"` which results in the calculation of all available metrics, while passing a list of the preferred metrics 
-            result in the calculation of those (e.g. `['in_degree','harmonic']`)
-
-        Returns
-        -------
-        R_peaks : dict
-            Dictionary of the computed metrics. The key corresponds to the name of the metric, while the value is an array containing the computed metric value for each node.
-
-        """
-        def _dict2array(dict):
-            """converts dictionary into list ordered by indicies"""
-            max_key = max(dict.keys())
-            return np.array([dict.get(i, 0) for i in range(max_key + 1)])
-
-        if sig is None:
-            raise ValueError(f"The input signal 'sig' is None.")
-
-        if self.directed is None:
-            raise ValueError(f"The graph must be directed for this computation.")
-
-        if metrics != "all" and not set(metrics).issubset(set(_centrality_metrics_list.keys())):
-            raise ValueError(f"At least one of the provided metrics is not known.")
-
-        # initialize some variables
-        N = len(sig)  # total signal length
-        M = int(self.window_seconds * self.fs)  # length of window segment
-        l = 0  # Left segment boundary
-        r = M  # Right segment boundary
-        dM = int(np.ceil(self.window_overlap * M))  # Size of segment overlap
-        L = int(np.ceil(((N - r) / (M - dM) + 1)))  # Number of segments
-        output = {}
-
-        # if input length is smaller than window, compute only one segment of this length without any overlap
-        if N < M:
-            M, r = N, N
-            L = 1
-
-        # filter the signal with a highpass butterworth filter
-        sig = self._filter_highpass(sig)
-
-        # do computation in small segments
-        for jj in range(L):
-            s = sig[l:r]
-            print(len(s))
-
-            # compute vg graph
-            vg = self._ts2vg(s)
-            G = vg.as_networkx()
-
-            for name, function in _centrality_metrics_list.items():
-                if metrics != "all" and name not in metrics:
-                    continue
-                segment = _dict2array(function(G))
-
-                # # # Update weight vector # # #
-                output = self._merge_segments(name, output, segment, l, r, dM, N)
-
-            # # # break loop, if end of signal is reached # # #
-            if r - l < M:
-                break
-            # # # Update segment boundaries # # #
-            l += M - dM
-            if r + (M - dM) <= N:
-                r += M - dM
-            else:
-                r = N
-
-        return output
 
     def calc_metric(self, sig, metrics="all"):
-        """ Calcuate several metrics for the given signal.
+        """ Calcuate several graph metrics on the visibility graph of the given signal. 
+        For this the signal is partitioned into overlapping segments for which the visibility graph and the graph metric is computed. 
 
         Parameters
         ----------
@@ -228,12 +131,12 @@ class VisGraphMetric:
             The signal which will be processed.
         metrics: 
             defaults to `"all"` which results in the calculation of all available metrics, while passing a list of the preferred metrics 
-            result in the calculation of those (e.g. `['in_degree','harmonic']`).
+            result in the calculation of those (e.g. `['average_clustering','node_connectivity']`).
             NOTE: The choice of wether using a directed or undirected graph results in a different set of available metrics!
 
         Returns
         -------
-        R_peaks : dict{tupel(metrics, window_indicies)}
+        output : dict{tupel(metrics, window_indicies)}
             Dictionary of the computed metrics. The key corresponds to the name of the metric, while the value is a tupel containing an array with the computed metric value in the first element, while the second element provides the starting-indicies of the corresponding windowed segments.
 
         """
@@ -269,8 +172,16 @@ class VisGraphMetric:
             vg = self._ts2vg(s)
             G = vg.as_networkx()
 
-            for name, function in self._metrics_list.items():
+            for name, (function, attr) in self._metrics_list.items():
                 if metrics != "all" and name not in metrics:
+                    continue
+
+                if self.directed is None and 'undirected' not in attr:
+                    print(f'The metric {name} is not defined for undirected graphs. Set the parameter "direction" of the main class to one of {_directions[1:]}.')
+                    continue
+
+                if self.directed is not None and 'directed' not in attr:
+                    print(f'The metric {name} is not defined for directed graphs. Set the parameter "direction" of the main class to `None`.')
                     continue
 
                 # # # Update weight vector # # #
@@ -287,6 +198,27 @@ class VisGraphMetric:
                 r = N
 
         return output
+
+    def get_available_metrics(self):
+        '''
+        This function returns the names of all available graph metrics under the current configuration of the class, since several metrics are only defined for directed or undireted graphs.
+
+        Returns
+        -------
+        metrics: list
+            List of names (strings) of the available metrics.
+
+        '''
+        metrics = []
+        for name, (function, attr) in self._metrics_list.items():
+            if self.directed is None and 'undirected' not in attr:
+                continue
+
+            if self.directed is not None and 'directed' not in attr:
+                continue
+
+            metrics.append(name)
+        return metrics
 
     def _merge_segments(self, name, data, segment, l, r, dM, N):
         """merge a segment with the full data vector by averaging overlapping parts. Similar to Welchs method for spectral estimation."""
