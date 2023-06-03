@@ -126,8 +126,10 @@ class VisGraphDetector:
         L = int(np.ceil(((N - r) / (M - dM) + 1)))  # Number of segments
         weights = np.zeros(N)  # Empty array to store the weights
 
+        # if input length is smaller than window, compute only one segment of this length without any overlap
         if N < M:
-            raise ValueError(f"The length of the input signal 'sig' must be greater than the window lengths, which is {M} samples.")
+            M, r = N, N
+            L = 1
 
         # filter the signal with a highpass butterworth filter
         sig = self._filter_highpass(sig)
