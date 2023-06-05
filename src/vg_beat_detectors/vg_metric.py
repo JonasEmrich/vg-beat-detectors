@@ -20,7 +20,8 @@ _edge_weight_options = [None,
                         'h_distance',
                         'abs_h_distance']
 
-# dictionary of available graph metrics in the following format Dict{Key(name): Value(Tupel(Funtor_of_metric, List(directed_or_undirected)))}
+# dictionary of available graph metrics
+# format: Dict{Key(name_of_metric): Value(Tupel(Functor_of_metric, List(directed_or_undirected)))}
 _metrics_list = {'node_connectivity':                       ((lambda x: nx.node_connectivity(x)),                       ['directed', 'undirected']),
                 'average_node_connectivity':                ((lambda x: nx.average_node_connectivity(x)),               ['directed', 'undirected']),
                 'average_clustering':                       ((lambda x: nx.average_clustering(x)),                      ['directed', 'undirected']),
