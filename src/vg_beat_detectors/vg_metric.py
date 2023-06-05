@@ -1,4 +1,5 @@
 from scipy import signal
+from scipy.fft import fft as scipy_fft
 from ts2vg import HorizontalVG, NaturalVG
 import numpy as np
 import networkx as nx
@@ -79,6 +80,9 @@ class VisGraphMetric:
         Overlap percentage (between 0 and 1) of the data segments used in the segment-wise computation. Defaults to 0.5
     lowcut : float
         Cutoff frequency of the input highpass filter (in Hz). Defaults to 4.0
+    freq_domain : bool
+        Specifies if the visibility graph from which the metrics are generated is generated from the input signal in 
+        the time domain (False) or frequency domain (True). Defaults to False
 
     """
 
@@ -90,6 +94,7 @@ class VisGraphMetric:
                  window_overlap=0.5,
                  window_length=2,
                  lowcut=4.0,
+                 freq_domain=False
                  ):
 
         if sampling_frequency <= 0:
@@ -116,20 +121,27 @@ class VisGraphMetric:
 
         if window_length <= 0:
             raise ValueError(f"'window_seconds' has to be a positive non-zero value (got {window_length}).")
-        self.window_seconds = window_length
+        self.window_samples = window_length
 
         self._metrics_list = _metrics_list
 
+        if not isinstance(freq_domain, bool):
+            raise ValueError(f"'freq_domain' has to be of type bool (got {freq_domain}).")
+        self.freq_domain = freq_domain
 
-    def calc_metric(self, sig, metrics="all"):
+
+    def calc_metric(self, sig, idx=None, metrics="all"):
         """ Calcuate several graph metrics on the visibility graph of the given signal. 
         For this the signal is partitioned into overlapping segments for which the visibility graph and the graph metric is computed. 
 
         Parameters
         ----------
-        sig: np.array
+        sig : np.array
             The signal which will be processed.
-        metrics: 
+        idx : np.array
+            Integer array indices of the given signal samples, defining the sample location in time when the given signal is sparse. 
+            If None, then it is assumes that all samples are contiguous. Defaults to None
+        metrics : 
             defaults to `"all"` which results in the calculation of all available metrics, while passing a list of the preferred metrics 
             result in the calculation of those (e.g. `['average_clustering','node_connectivity']`).
             NOTE: The choice of wether using a directed or undirected graph results in a different set of available metrics!
@@ -147,45 +159,62 @@ class VisGraphMetric:
             raise ValueError(f"At least one of the provided metrics is not known. Or the metric is only available for directed/undirected graphs.")
 
         # initialize some variables
-        N = len(sig)  # total signal length
-        M = int(self.window_seconds * self.fs)  # length of window segment
+        N = len(sig) if idx is None else idx[-1] # total signal length
+        M = int(self.window_samples*self.fs)  # length of window segment
         l = 0  # Left segment boundary
         r = M  # Right segment boundary
         dM = int(np.ceil(self.window_overlap * M))  # Size of segment overlap
         L = int(np.ceil(((N - r) / (M - dM) + 1)))  # Number of segments
-        output = {}
 
         # if input length is smaller than window, compute only one segment of this length without any overlap
         if N < M:
             M, r = N, N
             L = 1
 
-        # filter the signal with a highpass butterworth filter
-        sig = self._filter_highpass(sig)
+        # initialize output 
+        if metrics == "all":
+            metrics = self._metrics_list.keys()
+        
+        output = {}
+        for name in metrics:
+            (function, attr) = self._metrics_list[name]
+            if self.directed is None and 'undirected' not in attr:
+                print(f'The metric {name} is not defined for undirected graphs. Set the parameter "direction" of the main class to one of {_directions[1:]}.')
+                continue
+
+            if self.directed is not None and 'directed' not in attr:
+                print(f'The metric {name} is not defined for directed graphs. Set the parameter "direction" of the main class to `None`.')
+                continue
+            output[name] = (np.zeros(L), np.zeros(L))
 
         # do computation in small segments
         for jj in range(L):
-            s = sig[l:r]
-            print(len(s))
+            if idx is None:
+                s = sig[l:r]
+                t = None
+            else: 
+                idx_l = np.absolute(idx-l).argmin()
+                idx_r = np.absolute(idx-r).argmin()
+                s = sig[idx_l:idx_r]
+                t = idx[idx_l:idx_r]
+                #print(idx_l, idx_r, l, r, M,s, t)
+
+            if self.freq_domain:
+                s = self._ts2fft(s)
+                t = None #TODO: fft for unevenly spaced samples
+            else:
+                s = s
 
             # compute vg graph
-            vg = self._ts2vg(s)
+            vg = self._ts2vg(s,t)
             G = vg.as_networkx()
 
-            for name, (function, attr) in self._metrics_list.items():
-                if metrics != "all" and name not in metrics:
-                    continue
-
-                if self.directed is None and 'undirected' not in attr:
-                    print(f'The metric {name} is not defined for undirected graphs. Set the parameter "direction" of the main class to one of {_directions[1:]}.')
-                    continue
-
-                if self.directed is not None and 'directed' not in attr:
-                    print(f'The metric {name} is not defined for directed graphs. Set the parameter "direction" of the main class to `None`.')
-                    continue
+            for name in output.keys():
+                (function, attr) = self._metrics_list[name]
 
                 # # # Update weight vector # # #
-                output = self._append_segments(name, output, function(G), l)
+                output[name][0][jj] = function(G)
+                output[name][1][jj] = l
 
             # # # break loop, if end of signal is reached # # #
             if r - l < M:
@@ -220,31 +249,6 @@ class VisGraphMetric:
             metrics.append(name)
         return metrics
 
-    def _merge_segments(self, name, data, segment, l, r, dM, N):
-        """merge a segment with the full data vector by averaging overlapping parts. Similar to Welchs method for spectral estimation."""
-        if l == 0:
-            data[name] = np.pad(segment, (0, N - (r-l)), 'constant')
-        elif N - dM + 1 <= l and l + 1 <= N:
-            data[name][l:] = 0.5 * (segment + data[name][l:])
-        else:
-            data[name][l:l + dM] = 0.5 * (segment[:dM] + data[name][l:l + dM])
-            data[name][l + dM:r] = segment[dM:]
-        return data
-
-    def _append_segments(self, name, data, segment, l):
-        if l == 0:
-            data[name] = (segment, np.array(l))
-        else:
-            data[name] = (np.append(data[name][0], segment), np.append(data[name][1], l))
-        return data
-
-    def _filter_highpass(self, sig, order=2):
-        """implements a butterworth highpass filter"""
-        nyq = 0.5 * self.fs
-        high = self.lowcut / nyq
-        b, a = signal.butter(order, high, btype='highpass')
-        return signal.filtfilt(b, a, sig)
-
     def _ts2vg(self, xs, ts=None):
         """translates time series (ts, xs) into visibility graph representation and returns adjacency matrix"""
         # calculate the visibility graph
@@ -263,4 +267,10 @@ class VisGraphMetric:
         for edge in edges:
             adjacency[edge[0]][edge[1]] = 1 if self.edge_weight is None else edge[2]    
         return adjacency
+
+    def _ts2fft(self, ts):
+        """computes the magnitude within the freqency domian of a time series input"""
+        N = len(ts)
+        yf = scipy_fft(ts)
+        return 2.0/N * np.abs(yf[0:N//2])
 
