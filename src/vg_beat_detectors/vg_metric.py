@@ -79,8 +79,6 @@ class VisGraphMetric:
         Length of on data segment (in seconds!) used in the segment-wise processing of the signal. Defaults to 2
     window_overlap : float
         Overlap percentage (between 0 and 1) of the data segments used in the segment-wise computation. Defaults to 0.5
-    lowcut : float
-        Cutoff frequency of the input highpass filter (in Hz). Defaults to 4.0
     freq_domain : bool
         Specifies if the visibility graph from which the metrics are generated is generated from the input signal in 
         the time domain (False) or frequency domain (True). Defaults to False
@@ -94,15 +92,12 @@ class VisGraphMetric:
                  edge_weight=None,
                  window_overlap=0.5,
                  window_length=2,
-                 lowcut=4.0,
                  freq_domain=False
                  ):
 
         if sampling_frequency <= 0:
             raise ValueError(f"'sampling_frequency' has to be a positive non-zero value (got {sampling_frequency}).")
         self.fs = sampling_frequency
-
-        self.lowcut = lowcut
 
         if graph_type not in _graph_options:
             raise ValueError(f"Invalid 'graph_type' parameter: {graph_type}. Must be one of {_graph_options}.")
@@ -132,7 +127,7 @@ class VisGraphMetric:
 
 
     def calc_metric(self, sig, idx=None, metrics="all"):
-        """ Calcuate several graph metrics on the visibility graph of the given signal. 
+        """ Calculate several graph metrics on the visibility graph of the given signal. 
         For this the signal is partitioned into overlapping segments for which the visibility graph and the graph metric is computed. 
 
         Parameters
@@ -149,7 +144,7 @@ class VisGraphMetric:
 
         Returns
         -------
-        output : dict{tupel(metrics, window_indicies)}
+        output : dict{tupel(metrics, window_indices)}
             Dictionary of the computed metrics. The key corresponds to the name of the metric, while the value is a tupel containing an array with the computed metric value in the first element, while the second element provides the starting-indicies of the corresponding windowed segments.
 
         """
@@ -231,7 +226,7 @@ class VisGraphMetric:
 
     def get_available_metrics(self):
         '''
-        This function returns the names of all available graph metrics under the current configuration of the class, since several metrics are only defined for directed or undireted graphs.
+        This function returns the names of all available graph metrics under the current configuration of the class, since several metrics are only defined for directed or undirected graphs.
 
         Returns
         -------
@@ -270,7 +265,7 @@ class VisGraphMetric:
         return adjacency
 
     def _ts2fft(self, ts):
-        """computes the magnitude within the freqency domian of a time series input"""
+        """computes the magnitude within the frequency domain of a time series input"""
         N = len(ts)
         yf = scipy_fft(ts)
         return 2.0/N * np.abs(yf[0:N//2])
