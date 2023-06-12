@@ -128,7 +128,7 @@ class VisGraphMetric:
 
     def calc_metric(self, sig, idx=None, metrics="all"):
         """ Calculate several graph metrics on the visibility graph of the given signal. 
-        For this the signal is partitioned into overlapping segments for which the visibility graph and the graph metric is computed. 
+        For this, the signal is partitioned into overlapping segments for which the visibility graph and the graph metric is computed. 
 
         Parameters
         ----------
