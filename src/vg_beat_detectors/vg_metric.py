@@ -86,18 +86,13 @@ class VisGraphMetric:
     """
 
     def __init__(self,
-                 sampling_frequency=250,
                  graph_type="nvg",
                  direction='top_to_bottom',
                  edge_weight=None,
-                 window_overlap=0.5,
-                 window_length=2,
+                 beats_per_step=25,
+                 beats_per_window=50,
                  freq_domain=False
                  ):
-
-        if sampling_frequency <= 0:
-            raise ValueError(f"'sampling_frequency' has to be a positive non-zero value (got {sampling_frequency}).")
-        self.fs = sampling_frequency
 
         if graph_type not in _graph_options:
             raise ValueError(f"Invalid 'graph_type' parameter: {graph_type}. Must be one of {_graph_options}.")
@@ -111,13 +106,13 @@ class VisGraphMetric:
             raise ValueError(f"Invalid 'edge_weight' parameter: {edge_weight}. Must be one of {_edge_weight_options}.")
         self.edge_weight = edge_weight
 
-        if not 0.0 <= window_overlap < 1.0:
-            raise ValueError(f"'window_overlap' mus be a value in the interval [0.0;1.0) (got {window_overlap}).")
-        self.window_overlap = window_overlap
+        if int(beats_per_step) <= 0:
+            raise ValueError(f"'beats_per_step' has to be a positive non-zero value (got {beats_per_step}).")
+        self.beats_per_step = beats_per_step
 
-        if window_length <= 0:
-            raise ValueError(f"'window_seconds' has to be a positive non-zero value (got {window_length}).")
-        self.window_samples = window_length
+        if int(beats_per_window) <= 0:
+            raise ValueError(f"'beats_per_window' has to be a positive non-zero value (got {beats_per_window}).")
+        self.beats_per_window = int(beats_per_window)
 
         self._metrics_list = _metrics_list
 
@@ -126,17 +121,17 @@ class VisGraphMetric:
         self.freq_domain = freq_domain
 
 
-    def calc_metric(self, sig, idx=None, metrics="all"):
+    def calc_metric(self, rr_series, window_idxs=None, metrics="all"):
         """ Calculate several graph metrics on the visibility graph of the given signal. 
         For this, the signal is partitioned into overlapping segments for which the visibility graph and the graph metric is computed. 
 
         Parameters
         ----------
-        sig : np.array
+        rr_series : np.array
             The signal which will be processed.
-        idx : np.array
-            Integer array indices of the given signal samples, defining the sample location in time when the given signal is sparse. 
-            If None, then it is assumes that all samples are contiguous. Defaults to None
+        window_idxs: np.array
+            Array of the starting indices of each window, for setting manually the window positions. If argument is not `None`, the `beats_per_step`
+            argument is ignored and the given indices are used to determine the window positions.
         metrics : 
             defaults to `"all"` which results in the calculation of all available metrics, while passing a list of the preferred metrics 
             result in the calculation of those (e.g. `['average_clustering','node_connectivity']`).
@@ -148,24 +143,33 @@ class VisGraphMetric:
             Dictionary of the computed metrics. The key corresponds to the name of the metric, while the value is a tupel containing an array with the computed metric value in the first element, while the second element provides the starting-indicies of the corresponding windowed segments.
 
         """
-        if sig is None:
+        if rr_series is None:
             raise ValueError(f"The input signal 'sig' is None.")
 
         if metrics != "all" and not set(metrics).issubset(set(self._metrics_list.keys())):
             raise ValueError(f"At least one of the provided metrics is not known. Or the metric is only available for directed/undirected graphs.")
 
+        if window_idxs is not None and window_idxs[window_idxs >= len(rr_series)].any():
+            raise ValueError(f"At least one of the window indices exceeds the signal length.")
+
         # initialize some variables
-        N = len(sig) if idx is None else idx[-1] # total signal length
-        M = int(self.window_samples*self.fs)  # length of window segment
-        l = 0  # Left segment boundary
+        N = len(rr_series) # total signal length
+        M = self.beats_per_window  # length of window segment
+        step = self.beats_per_step # number of beats to move forward for computing next window
+        l = 0  # index of left window boundary
         r = M  # Right segment boundary
-        dM = int(np.ceil(self.window_overlap * M))  # Size of segment overlap
-        L = int(np.ceil(((N - r) / (M - dM) + 1)))  # Number of segments
+        if window_idxs is None:
+            L = int(np.ceil(((N - r) / step + 1)))  # Number of segments
+            window_idxs = np.arange(L)*step 
+        else: # got an array of indices
+            L = len(window_idxs)
+            
 
         # if input length is smaller than window, compute only one segment of this length without any overlap
         if N < M:
             M, r = N, N
             L = 1
+            window_idxs = [0]
 
         # initialize output 
         if metrics == "all":
@@ -184,26 +188,23 @@ class VisGraphMetric:
             output[name] = (np.zeros(L), np.zeros(L))
 
         # do computation in small segments
-        for jj in range(L):
-            if idx is None:
-                s = sig[l:r]
-                t = None
-            else: 
-                idx_l = np.absolute(idx-l).argmin()
-                idx_r = np.absolute(idx-r).argmin()
-                s = sig[idx_l:idx_r]
-                t = idx[idx_l:idx_r]
-                #print(idx_l, idx_r, l, r, M,s, t)
+        for jj, l in enumerate(window_idxs):
+            # # # Update segment boundaries # # #
+            r = l + M
+            if r > N:
+                r = N
+
+            s = rr_series[l:r]
 
             if self.freq_domain:
                 s = self._ts2fft(s)
-                t = None #TODO: fft for unevenly spaced samples
             else:
                 s = s
 
             # compute vg graph
-            vg = self._ts2vg(s,t)
+            vg = self._ts2vg(s)
             G = vg.as_networkx()
+
 
             for name in output.keys():
                 (function, attr) = self._metrics_list[name]
@@ -211,16 +212,6 @@ class VisGraphMetric:
                 # # # Update weight vector # # #
                 output[name][0][jj] = function(G)
                 output[name][1][jj] = l
-
-            # # # break loop, if end of signal is reached # # #
-            if r - l < M:
-                break
-            # # # Update segment boundaries # # #
-            l += M - dM
-            if r + (M - dM) <= N:
-                r += M - dM
-            else:
-                r = N
 
         return output
 
