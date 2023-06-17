@@ -51,6 +51,9 @@ _metrics_list = {'node_connectivity':                       ((lambda x: nx.node_
                 'non_randomness':                           ((lambda x: nx.non_randomness(x)[0]),                       ['undirected']),
                 'small_world_sigma':                        ((lambda x: nx.sigma(x)),                                   ['undirected']),
                 'small_world_omega':                        ((lambda x: nx.omega(x)),                                   ['undirected']),
+                'shortest_path_length_left_to_right':       ((lambda x: _shortest_path_length_left_to_right(x)),        ['directed', 'undirected']), # 
+                'maximum_flow_value_left_to_right':         ((lambda x: _maximum_flow_value_left_to_right(x)),          ['directed', 'undirected']), # use weighted graph
+                'minimum_cut_value_left_to_right':          ((lambda x: _minimum_cut_value_left_to_right(x)),           ['directed', 'undirected']), # use weighted graph
 }
 
 
@@ -203,8 +206,13 @@ class VisGraphMetric:
 
             # compute vg graph
             vg = self._ts2vg(s)
-            G = vg.as_networkx()
+            G = self._vg2networkx(vg)
+            """             print(G.nodes, min(G.nodes), max(G.nodes))
+            print(nx.minimum_cut_value(G, min(G.nodes), max(G.nodes), "weight"))
+            import matplotlib.pyplot as plt
 
+            nx.draw_networkx(G, with_labels=True)
+            plt.show() """
 
             for name in output.keys():
                 (function, attr) = self._metrics_list[name]
@@ -254,6 +262,22 @@ class VisGraphMetric:
         for edge in edges:
             adjacency[edge[0]][edge[1]] = 1 if self.edge_weight is None else edge[2]    
         return adjacency
+    
+    def _vg2networkx(self, vg):
+        """converts visibility graph object into a weighted networkx graph"""
+        vg._validate_is_built()
+
+        if vg.is_directed:
+            g = nx.DiGraph()
+        else:
+            g = nx.Graph()
+        
+        if vg.is_weighted:
+            g.add_weighted_edges_from(vg.edges)
+        else:
+            g.add_weighted_edges_from([(e[0], e[1], 1) for e in vg.edges])
+
+        return g
 
     def _ts2fft(self, ts):
         """computes the magnitude within the frequency domain of a time series input"""
@@ -261,3 +285,26 @@ class VisGraphMetric:
         yf = scipy_fft(ts)
         return 2.0/N * np.abs(yf[0:N//2])
 
+def _shortest_path_length_left_to_right(G):
+    a = min(G.nodes)
+    b = max(G.nodes)
+                
+    if nx.has_path(G, a, b):
+        return nx.dijkstra_path_length(G, a, b)
+    return np.nan
+
+def _minimum_cut_value_left_to_right(G):
+    a = min(G.nodes)
+    b = max(G.nodes)
+                
+    if nx.has_path(G, a, b):
+        return nx.minimum_cut_value(G, a, b, capacity="weight")
+    return np.nan
+
+def _maximum_flow_value_left_to_right(G):
+    a = min(G.nodes)
+    b = max(G.nodes)
+                
+    if nx.has_path(G, a, b):
+        return nx.maximum_flow_value(G, a, b, capacity="weight")
+    return np.nan
