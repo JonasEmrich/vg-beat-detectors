@@ -138,7 +138,7 @@ class VisGraphMetric:
         metrics : 
             defaults to `"all"` which results in the calculation of all available metrics, while passing a list of the preferred metrics 
             result in the calculation of those (e.g. `['average_clustering','node_connectivity']`).
-            NOTE: The choice of wether using a directed or undirected graph results in a different set of available metrics!
+            NOTE: The choice of whether using a directed or undirected graph results in a different set of available metrics!
 
         Returns
         -------
