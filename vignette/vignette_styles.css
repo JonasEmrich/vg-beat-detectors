@@ -1,0 +1,23 @@
+h1 {
+  color:  #336C68;
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 44px;
+  font-weight: 600;
+
+}
+
+h2 {
+  color:  #6BB2AD;
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+
+}
+
+p {background-color: #ffffff;
+	  color: black;
+	  font-family: 'Titillium Web', sans-serif;
+	  font-size: 17px;
+	  font-weight: 500;
+}
+	  

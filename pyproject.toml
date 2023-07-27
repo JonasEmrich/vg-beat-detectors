@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vg-beat-detectors"
+version = "0.0.11"
+authors = [
+    { name="Jonas Emrich", email="mail@jonasemrich.de" },
+    { name="Taulant Koka", email="taulant.koka@tu-darmstadt.de" }
+]
+maintainers = [
+    { name="Jonas Emrich", email="mail@jonasemrich.de" },
+    { name="Taulant Koka", email="taulant.koka@tu-darmstadt.de" }
+]
+dependencies = ["numpy", "scipy", "ts2vg"]
+description = "Fast and sample-accurate R-peak detectors based on visibility graphs."
+readme = "README.md"
+requires-python = ">=3.8"
+license.file = "LICENSE"
+keywords = ["cardiovascular", "ecg", "R-peak", "R-peak detector", "visibility graphs", "beat detector", "hrv"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+]
+
+[project.urls]
+"Homepage" = "https://robustdatascience.org/software/"
+"Source Code" = "https://github.com/JonasEmrich/vg-beat-detectors"
+
+[project.optional-dependencies]
+tests = [
+    "pytest",
+    "scipy>=1.10.1",
+    "pooch"
+]
