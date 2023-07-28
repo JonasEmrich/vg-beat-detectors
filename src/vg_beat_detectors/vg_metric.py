@@ -152,7 +152,7 @@ class VisGraphMetric:
         if metrics != "all" and not set(metrics).issubset(set(self._metrics_list.keys())):
             raise ValueError(f"At least one of the provided metrics is not known. Or the metric is only available for directed/undirected graphs.")
 
-        if window_idxs is not None and window_idxs[window_idxs >= len(rr_series)].any():
+        if window_idxs is not None and window_idxs[window_idxs+self.beats_per_window >= len(rr_series)].any():
             raise ValueError(f"At least one of the window indices exceeds the signal length.")
 
         # initialize some variables
