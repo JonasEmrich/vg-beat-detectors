@@ -3,6 +3,7 @@ from scipy.fft import fft as scipy_fft
 from ts2vg import HorizontalVG, NaturalVG
 import numpy as np
 import networkx as nx
+from networkx.algorithms.connectivity import local_edge_connectivity, local_node_connectivity
 
 _directions = [None, 'top_to_bottom', 'left_to_right']
 
@@ -28,7 +29,7 @@ _metrics_list = {'node_connectivity':                       ((lambda x: nx.node_
                 'edge_connectivity':                        ((lambda x: nx.edge_connectivity(x)),                       ['directed', 'undirected']),
                 'degree_assortativity_coefficient':         ((lambda x: nx.degree_assortativity_coefficient(x)),        ['directed', 'undirected']),
                 'degree_pearson_correlation_coefficient':   ((lambda x: nx.degree_pearson_correlation_coefficient(x)),  ['directed', 'undirected']),
-                'trophic_incoherence_parameter':            ((lambda x: nx.trophic_incoherence_parameter(x)),           ['directed']),
+                #'trophic_incoherence_parameter':            ((lambda x: nx.trophic_incoherence_parameter(x)),           ['directed']),
                 'global_reaching_centrality':               ((lambda x: nx.global_reaching_centrality(x)),              ['directed', 'undirected']),
                 'number_strongly_connected_components':     ((lambda x: nx.number_strongly_connected_components(x)),    ['directed']),
                 'number_weakly_connected_components':       ((lambda x: nx.number_weakly_connected_components(x)),      ['directed']),
@@ -45,12 +46,17 @@ _metrics_list = {'node_connectivity':                       ((lambda x: nx.node_
                 'graph_clique_number':                      ((lambda x: max(len(c) for c in nx.find_cliques(x))),       ['undirected']),
                 'graph_number_of_cliques':                  ((lambda x: sum(1 for _ in nx.find_cliques(x))),            ['undirected']),
                 'number_connected_components':              ((lambda x: nx.number_connected_components(x)),             ['undirected']),
-                'stoer_wagner':                             ((lambda x: nx.stoer_wagner(x)[0]),                         ['undirected']),
+                #'stoer_wagner':                             ((lambda x: nx.stoer_wagner(x)[0]),                         ['undirected']), # only pos edges
                 'local_efficiency':                         ((lambda x: nx.local_efficiency(x)),                        ['undirected']),
                 'global_efficiency':                        ((lambda x: nx.global_efficiency(x)),                       ['undirected']),
-                'non_randomness':                           ((lambda x: nx.non_randomness(x)[0]),                       ['undirected']),
-                'small_world_sigma':                        ((lambda x: nx.sigma(x)),                                   ['undirected']),
-                'small_world_omega':                        ((lambda x: nx.omega(x)),                                   ['undirected']),
+                #'non_randomness':                           ((lambda x: nx.non_randomness(x)[0]),                       ['undirected']),
+                #'small_world_sigma':                        ((lambda x: nx.sigma(x)),                                   ['undirected']),
+                #'small_world_omega':                        ((lambda x: nx.omega(x)),                                   ['undirected']),
+                'local_edge_connectivity':                  ((lambda x: local_edge_connectivity(x, *_get_st(x))),     ['directed', 'undirected']),
+                'local_node_connectivity':                  ((lambda x: local_node_connectivity(x, *_get_st(x))),     ['undirected']),
+                'local_reaching_centrality':                ((lambda x: nx.local_reaching_centrality(x, _get_mid(x))),   ['directed']),
+                'closeness_centrality':                     ((lambda x: nx.closeness_centrality(x, _get_mid(x))),        ['directed', 'undirected']),
+                'dispersion':                               ((lambda x: nx.dispersion(x, *_get_st(x))),                  ['directed', 'undirected']),
                 'shortest_path_length_left_to_right':       ((lambda x: _shortest_path_length_left_to_right(x)),        ['directed', 'undirected']), # 
                 'maximum_flow_value_left_to_right':         ((lambda x: _maximum_flow_value_left_to_right(x)),          ['directed', 'undirected']), # use weighted graph
                 'minimum_cut_value_left_to_right':          ((lambda x: _minimum_cut_value_left_to_right(x)),           ['directed', 'undirected']), # use weighted graph
@@ -63,9 +69,6 @@ class VisGraphMetric:
 
     Parameters
     ----------
-    sampling_frequency : int
-        The sampling frequency of the signal (in Hz, samples/second).
-        Defaults to 250
     graph_type : str
         Specifies the visibility graph transformation used for computation. Has to be one of ["nvg", "hvg"].
         Defaults to ``"nvg"``
@@ -288,9 +291,12 @@ class VisGraphMetric:
 def _shortest_path_length_left_to_right(G):
     a = min(G.nodes)
     b = max(G.nodes)
-                
-    if nx.has_path(G, a, b):
-        return nx.dijkstra_path_length(G, a, b)
+
+    try:           
+        if nx.has_path(G, a, b):
+            return nx.dijkstra_path_length(G, a, b)
+    except ValueError:
+        pass
     return np.nan
 
 def _minimum_cut_value_left_to_right(G):
@@ -308,3 +314,16 @@ def _maximum_flow_value_left_to_right(G):
     if nx.has_path(G, a, b):
         return nx.maximum_flow_value(G, a, b, capacity="weight")
     return np.nan
+
+def _get_st(G):
+    return min(G.nodes), max(G.nodes)
+
+def _get_mid(G):
+    # returns the middle node for a given graph
+    # for a odd number of nodes, the mddle right one is returned
+    a = min(G.nodes)
+    b = max(G.nodes)
+    if len(G) % 2 == 0:
+        return (a+b+1)/2
+    else:
+        return (a+b)/2
