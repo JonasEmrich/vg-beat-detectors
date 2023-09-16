@@ -72,8 +72,8 @@ import matplotlib.pyplot as plt
 from scipy.datasets import electrocardiogram
 
 # generate some ECG signal
-fs = 360
 ecg = electrocardiogram() # sampling frequency of this excerpt is 360Hz
+fs = 360
 time = np.arange(ecg.size) / fs
 
 # visibility graph R-peak detector
@@ -92,7 +92,7 @@ plt.ylim(-1, 1.5)
 plt.show()
 ```
 
-<img src="vignette/vg_beat_detectors_files/figure-html/unnamed-chunk-4-1.png" width="85%" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/JonasEmrich/vg-beat-detectors/main/vignette/vg_beat_detectors_files/figure-html/example_rpeak_detection.png" width="85%" style="display: block; margin: auto;" />
 
 ------------------------------------------------------------------------
 
@@ -165,7 +165,7 @@ options.
 ### Adjusting segments
 
 The input ECG signal is processed segment-wise using segments with a
-default length of 2sec and an overlap of 50%, i.e., `window_length=2`
+default length of 2 sec and an overlap of 50%, i.e., `window_length=2`
 and `window_overlap=0.5`. As their name suggests, these parameters allow
 for adjustments of the window length and overlap.
 
@@ -173,7 +173,7 @@ for adjustments of the window length and overlap.
 
 To change the lower cutoff frequency of the highpass filter that
 pre-processes the input ECG signal, the parameter `lowcut` can be
-modified The default value is $4 \mathrm{Hz}$.
+modified. The default value is $4 \mathrm{Hz}$.
 
 ## References
 

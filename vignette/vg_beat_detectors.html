@@ -1673,8 +1673,8 @@ utilization of the ‘FastWHVG’ is analogous.</p>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.datasets <span class="im">import</span> electrocardiogram</span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># generate some ECG signal</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>fs <span class="op">=</span> <span class="dv">360</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>ecg <span class="op">=</span> electrocardiogram() <span class="co"># sampling frequency of this excerpt is 360Hz</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>ecg <span class="op">=</span> electrocardiogram() <span class="co"># sampling frequency of this excerpt is 360Hz</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>fs <span class="op">=</span> <span class="dv">360</span></span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>time <span class="op">=</span> np.arange(ecg.size) <span class="op">/</span> fs</span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># visibility graph R-peak detector</span></span>
@@ -1768,7 +1768,7 @@ window length and overlap.</p>
 <h2>Setting highpass cutoff frequency</h2>
 <p>To change the lower cutoff frequency of the highpass filter that
 pre-processes the input ECG signal, the parameter <code>lowcut</code>
-can be modified The default value is <span class="math inline">\(4
+can be modified. The default value is <span class="math inline">\(4
 \mathrm{Hz}\)</span>.</p>
 </div>
 </div>
