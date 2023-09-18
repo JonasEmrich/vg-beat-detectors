@@ -1,2 +1,8 @@
 
 .idea/
+
+dist/
+
+src/vg_beat_detectors.egg-info/
+
+WIP_metric/jemrich.code-workspace
