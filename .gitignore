@@ -1,4 +1,24 @@
 
+
+build/
+
+
+commands.txt
+
+
+
+src/vg_beat_detectors/__pycache__/
+
+vignette/.Rhistory
+
+
+
+.vscode/
+
+
+WIP_metric/
+
+
 .idea/
 
 dist/
