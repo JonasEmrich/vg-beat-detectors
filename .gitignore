@@ -10,3 +10,7 @@ commands.txt
 correlation.csv
 
 capacity_full.csv
+
+src/vg_beat_detectors.egg-info/
+
+dist/
