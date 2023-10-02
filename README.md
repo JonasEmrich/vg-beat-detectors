@@ -1,4 +1,4 @@
-# Fast and Sample-Accurate R-Peak Detectors Based on Visibility Graphs
+# Accelerated Sample-Accurate R-Peak Detectors Based on Visibility Graphs
 
 This Python package provides an implementation of visibility graph (VG)
 based approaches for detecting R-peaks in ECG signals. The utilized
