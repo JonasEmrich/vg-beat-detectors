@@ -1,4 +1,4 @@
-# Fast and Sample-Accurate R-Peak Detectors Based on Visibility Graphs
+# Accelerated Sample-Accurate R-Peak Detectors Based on Visibility Graphs
 
 This Python package provides an implementation of visibility graph (VG)
 based approaches for detecting R-peaks in ECG signals. The utilized
@@ -22,6 +22,24 @@ from the [Python Package Index
 
 Additionally, the source code is available on
 [GitHub](https://github.com/JonasEmrich/vg-beat-detectors).
+
+## Referencing
+When you are using this Package in your scientific publication, please cite:
+
+J. Emrich, T. Koka, S. Wirth and M. Muma, "Accelerated Sample-Accurate R-Peak Detectors Based on Visibility Graphs," 2023 31st European Signal Processing Conference (EUSIPCO), Helsinki, Finland, 2023, pp. 1090-1094, doi: [10.23919/EUSIPCO58844.2023.10290007](https://doi.org/10.23919/EUSIPCO58844.2023.10290007).
+
+
+``` bibtex
+@INPROCEEDINGS{emrich2023,
+author={Emrich, Jonas and Koka, Taulant and Wirth, Sebastian and Muma, Michael},
+booktitle={2023 31st European Signal Processing Conference (EUSIPCO)},
+title={Accelerated Sample-Accurate R-Peak Detectors Based on Visibility Graphs},
+year={2023},
+volume={},
+number={},
+pages={1090-1094},
+doi={10.23919/EUSIPCO58844.2023.10290007}}
+```
 
 ## Quick Start
 
@@ -185,7 +203,7 @@ class="csl-right-inline"><span class="smallcaps">Emrich</span>, J.,
 class="smallcaps">Wirth</span>, S. and <span
 class="smallcaps">Muma</span>, M. (2023). [<span
 class="nocase">Accelerated Sample-Accurate R-Peak Detectors Based on
-Visibility Graphs</span>]().</span>
+Visibility Graphs</span>](https://doi.org/10.23919/EUSIPCO58844.2023.10290007).</span>
 
 <span class="csl-left-margin">\[2\] </span><span
 class="csl-right-inline"><span class="smallcaps">Koka</span>, T. and
