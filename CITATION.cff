@@ -1,0 +1,75 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: >-
+  Accelerated Sample-Accurate R-Peak Detectors Based on
+  Visibility Graphs
+message: 'If you use this package, please cite it as below.'
+type: software
+authors:
+  - given-names: Jonas
+    family-names: Emrich
+    email: mail@jonasemrich.de
+  - given-names: Taulant
+    family-names: Koka
+  - given-names: Sebastian
+    family-names: Wirth
+  - given-names: Michael
+    family-names: Muma
+identifiers:
+  - type: doi
+    value: 10.23919/EUSIPCO58844.2023.10290007
+repository-code: 'https://github.com/JonasEmrich/vg-beat-detectors'
+abstract: >-
+  The effective detection and accurate clinical diagnosis of
+  cardiac conditions strongly relies on the correct
+  localization of R-peaks in the electrocardiogram (ECG).
+  Recently, demand for sample-accurate R-peak detection,
+  which is essential to precisely reveal vital features,
+  such as heart rate variability and pulse transit time, has
+  increased. Therefore, we propose two novel sample-accurate
+  visibility-graph-based R-peak detectors, the FastNVG and
+  the FastWHVG detector. The visibility graph (VG)
+  transformation maps a discrete signal into a graph by
+  representing sampling locations as nodes and establishing
+  edges between mutually visible samples. However,
+  processing large-scale clinical ECG data urgently demands
+  further acceleration of VG-based algorithms. The proposed
+  methods reduce the required computation time by one order
+  of magnitude and simultaneously decrease the required
+  memory compared to a recently proposed VG-based R-Peak
+  detector. Instead of transforming the entire ECG, the
+  proposed acceleration benefits largely from building the
+  VG based on a subset containing only the samples relevant
+  to R-peak detection. Further acceleration is obtained by
+  adopting the computationally efficient horizontal
+  visibility graph, which has not yet been used for R-peak
+  detection. Numerical experiments and benchmarks on
+  multiple ECG databases demonstrate a significantly
+  superior performance of the proposed VG-based methods
+  compared to popular R-peak detectors.
+keywords:
+  - R-peak detection
+  - Visibility graph
+license: GPL-3.0
+preferred-citation:
+  type: conference-paper
+  authors:
+  - given-names: Jonas
+    family-names: Emrich
+    email: mail@jonasemrich.de
+  - given-names: Taulant
+    family-names: Koka
+  - given-names: Sebastian
+    family-names: Wirth
+  - given-names: Michael
+    family-names: Muma
+  title: "Accelerated Sample-Accurate R-Peak Detectors Based on Visibility Graphs"
+  conference:
+    name: "2023 31st European Signal Processing Conference (EUSIPCO)"
+  month: 9
+  doi: 10.23919/EUSIPCO58844.2023.10290007
+  start: 1090 # First page number
+  end: 1094 # Last page number
+  year: 2023
