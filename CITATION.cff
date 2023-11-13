@@ -68,6 +68,7 @@ preferred-citation:
   title: "Accelerated Sample-Accurate R-Peak Detectors Based on Visibility Graphs"
   conference:
     name: "2023 31st European Signal Processing Conference (EUSIPCO)"
+  collection-title: "2023 31st European Signal Processing Conference (EUSIPCO)"
   month: 9
   doi: 10.23919/EUSIPCO58844.2023.10290007
   start: 1090 # First page number
