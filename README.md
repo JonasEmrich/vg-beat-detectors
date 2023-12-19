@@ -87,7 +87,7 @@ from vg_beat_detectors import FastNVG
 # import packages used in this example
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.datasets import electrocardiogram
+from scipy.misc import electrocardiogram
 
 # generate some ECG signal
 ecg = electrocardiogram() # sampling frequency of this excerpt is 360Hz
