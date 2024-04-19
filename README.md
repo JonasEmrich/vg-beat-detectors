@@ -1,5 +1,10 @@
 # Accelerated Sample-Accurate R-Peak Detectors Based on Visibility Graphs
-[![Downloads](https://static.pepy.tech/badge/vg-beat-detectors)](https://pepy.tech/project/vg-beat-detectors)
+![Pepy Total Downlods](https://img.shields.io/pepy/dt/vg-beat-detectors)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/vg-beat-detectors)
+![PyPI - License](https://img.shields.io/pypi/l/vg-beat-detectors)
+[Paper](https://eurasip.org/Proceedings/Eusipco/Eusipco2023/pdfs/0001090.pdf)
+![Static Badge](https://img.shields.io/badge/Paper-Download?link=https%3A%2F%2Feurasip.org%2FProceedings%2FEusipco%2FEusipco2023%2Fpdfs%2F0001090.pdf)
+
 
 This Python package provides an implementation of visibility graph (VG)
 based approaches for detecting R-peaks in ECG signals. The utilized
