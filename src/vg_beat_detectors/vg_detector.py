@@ -211,6 +211,11 @@ class VisGraphDetector:
         """calculates weights through iterative k-Hop paths metric"""
         size = len(adjacency)
         w = np.ones(size) / size
+
+        if size <= 1:
+            print("WARNING: Performance might be impaired since segments are becoming very small. Consider not using the accelerated version, or investigate the input ECG signal for flat line segments.")
+            return w
+
         while np.count_nonzero(w) > beta * size:
             Av = adjacency @ w
             w_new = abs(Av / np.linalg.norm(Av))
